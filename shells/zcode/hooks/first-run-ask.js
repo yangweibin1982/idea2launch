@@ -57,15 +57,39 @@ function seg(parts) {
   return parts.join(path.sep);
 }
 
+// ---- path guard (security hardening) ----
+// Threat model: [project-root] is trusted local input, but every fs touch is
+// still confined to <root>/idea2launch/<constant-name>. `guarded()` enforces
+// the root boundary check (target.startsWith(root + sep)) on every join, so
+// even a hostile root/rel can never escape the project subtree.
+function guarded(root, ...rel) {
+  const target = seg([root, ...rel]);
+  const base = root.endsWith(path.sep) ? root : root + path.sep;
+  if (!target.startsWith(base)) {
+    throw new Error('path guard: target escapes project root');
+  }
+  return target;
+}
+
+function resolveRoot(raw) {
+  // Normalize the user-supplied root (resolves .. / relative segments) and
+  // require it to be an existing directory — anything else is a usage error.
+  const root = path.normalize(path.isAbsolute(raw) ? raw : path.join(process.cwd(), raw));
+  let st;
+  try { st = fs.statSync(root); } catch (_) { st = null; }
+  if (!st || !st.isDirectory()) return null;
+  return root;
+}
+
 function readMarker(root) {
-  try { return fs.readFileSync(seg([root, ...MARKER_REL]), 'utf8').trim(); }
+  try { return fs.readFileSync(guarded(root, ...MARKER_REL), 'utf8').trim(); }
   catch (_) { return ''; }
 }
 
 function writeMarker(root, answer) {
-  const dir = seg([root, 'idea2launch']);
+  const dir = guarded(root, 'idea2launch');
   fs.mkdirSync(dir, { recursive: true });
-  const target = seg([root, ...MARKER_REL]);
+  const target = guarded(root, ...MARKER_REL);
   const tmp = target + '.tmp';
   fs.writeFileSync(tmp, answer + '\n', 'utf8');
   // Read-back self-check, then atomic rename (state-protocol §2.2 miniature).
@@ -78,7 +102,7 @@ function writeMarker(root, answer) {
 }
 
 function mergeStateField(root, answer) {
-  const statePath = seg([root, ...STATE_REL]);
+  const statePath = guarded(root, ...STATE_REL);
   let raw;
   try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return false; }
   let obj;
@@ -126,6 +150,11 @@ function run(argv, io) {
     }
   }
   root = root || process.cwd();
+  root = resolveRoot(root);
+  if (!root) {
+    io.out('用法错误：项目根不存在或不是目录——' + argv.find((a) => a !== '--answer' && a !== 'on' && a !== 'off' && a !== 'ask') + '\n');
+    return 1;
+  }
 
   const marker = readMarker(root);
   const d = decide({ marker, answerArg, isTTY: io.isTTY });

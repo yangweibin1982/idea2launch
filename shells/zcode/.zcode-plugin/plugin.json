@@ -1,0 +1,23 @@
+{
+  "name": "idea2launch",
+  "version": "0.1.0",
+  "description": "Nine-stage guided wizard for non-technical users: bring an idea, get a running web app plus full docs. Thin ZCode shell - registers the idea2launch skill and an L3 intent hint hook; all workflow logic lives in the platform-neutral core.",
+  "description_i18n": {
+    "en": "Nine-stage guided wizard for non-technical users: bring an idea, get a running web app plus full docs (idea evaluation, requirements, design, tech, plan, build, quality, delivery, light operations). Thin ZCode shell: skill registration plus an L3 intent hint hook; all workflow logic lives in the platform-neutral core.",
+    "zh-CN": "面向完全非技术用户的九阶段向导：只带一个想法进来，交付可运行的 Web 应用＋全套文档（立项评估→需求→设计→技术→计划→开发→质量→交付→轻运营）。ZCode 壳只做技能注册与 L3 意图提示，全部工序逻辑在平台无关核心。"
+  },
+  "author": {
+    "name": "idea2launch contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "wizard",
+    "no-code",
+    "web-app",
+    "idea",
+    "launch",
+    "guide"
+  ],
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json"
+}

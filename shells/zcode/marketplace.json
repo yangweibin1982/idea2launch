@@ -1,0 +1,19 @@
+{
+  "name": "idea2launch-local",
+  "plugins": [
+    {
+      "name": "idea2launch",
+      "source": ".",
+      "version": "0.1.0",
+      "description": "Nine-stage guided wizard: from a raw idea to a running web app plus full docs. Thin ZCode shell over the platform-neutral core.",
+      "displayName": "idea2launch",
+      "displayName_i18n": {
+        "zh-CN": "想法落地向导"
+      },
+      "description_i18n": {
+        "zh-CN": "九阶段向导：完全非技术用户从想法到可运行 Web 应用＋全套文档。壳薄核厚，工序逻辑在平台无关核心。"
+      },
+      "category": "productivity"
+    }
+  ]
+}

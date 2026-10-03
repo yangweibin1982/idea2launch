@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "process",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/l3-intent-hint.js"
+            ],
+            "timeoutMs": 10000,
+            "statusMessage": "idea2launch L3 意图提示"
+          }
+        ]
+      }
+    ]
+  }
+}

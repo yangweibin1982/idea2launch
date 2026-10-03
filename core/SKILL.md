@@ -49,9 +49,11 @@ description: 智能体应用新手向导——完全非技术的用户只带一�
 
 **任何会话开场：读 `idea2launch/state.json` → 向用户播报当前阶段与可做动作，从断点继续，不重做已签字阶段。**
 
+读写细则（写路径唯一/快照回滚/原子写/gate 命名/decisions.log/open_gaps）见 [references/state-protocol.md](references/state-protocol.md)（T8 交付）。
+
 ## 4. 触发协议
 
-显式启动、L3 意图提示（检测开发意图→提示不自动执行）、三层触发模型（L1 闸门 ×9 / L2 关键决策 ×3 / L3 意图提示）与能力探测协议：全量细则见 [references/triggers.md](references/triggers.md)（**T2 交付，尚未在盘**）。
+显式启动、L3 意图提示（检测开发意图→提示不自动执行）、三层触发模型（L1 闸门 ×9 / L2 关键决策 ×3 / L3 意图提示）与能力探测协议：全量细则见 [references/triggers.md](references/triggers.md)（T2 已交付）。
 
 ## 5. 配套资产索引（T2 交付）
 

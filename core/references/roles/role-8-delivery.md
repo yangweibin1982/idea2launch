@@ -6,7 +6,7 @@
 
 1. 打包本地一键运行包＋写启动说明（双击级大白话：解压哪、点哪个、看到什么算成功）。
 2. 产出 `上线检查单.md`（若将来要发布需逐项确认的清单）与 `用户手册.md`（常用操作＋常见问题）。
-3. 实例化生成项目 AGENTS.md：按工程规范包实例化规则（[../disciplines/engineering.md](../disciplines/engineering.md) E5）把 [../templates/generated-project-AGENTS.md](../templates/generated-project-AGENTS.md) 填充落用户项目根。
+3. 复核补全生成项目 AGENTS.md：阶段 6 首个开发动作已按工程规范包实例化规则（[../disciplines/engineering.md](../disciplines/engineering.md) E5）首次生成，本阶段按 [../templates/generated-project-AGENTS.md](../templates/generated-project-AGENTS.md) 复核补全（E5 必选项零裁剪复核、启动/测试命令与应用实际逐字核对、打包期新增条目），落用户项目根。
 4. 交付后给出「下一步可发布」提示（M1 只提示不代发布）；过交付确认闸门。
 
 ## 输入

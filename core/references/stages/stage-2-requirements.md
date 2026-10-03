@@ -208,7 +208,7 @@
 | 1 | PRD 在盘且八节齐全 | `grep -c "^## " idea2launch/2-requirements/PRD.md` | ＝8 |
 | 2 | PRD 功能条目带来源 | 三节表格行「来源」列非空（人工抽查＋`grep -c "^| F-" PRD.md` 与来源列空值计数对照） | 空来源＝0 |
 | 3 | PRD 不做清单在盘 | `grep -c "^| N-" idea2launch/2-requirements/PRD.md` | ≥1，且每条有「为什么本期不做」 |
-| 4 | 用户故事在盘且够量 | `grep -c "^### US-" idea2launch/2-requirements/用户故事.md`；`grep -c "优先级**：P0" 同文件`；`grep -c "假如" 同文件` | 总数 ≥6 且 ≥「P0 功能条数＋1」；P0 ≥3；异常场景 ≥1；每条含 ≥2 个「假如」三段式验收 |
+| 4 | 用户故事在盘且够量 | `grep -c "^### US-" idea2launch/2-requirements/用户故事.md`；`grep -c "优先级\*\*：P0" 同文件`；`grep -c "假如" 同文件` | 总数 ≥6 且 ≥「P0 功能条数＋1」；P0 ≥3；异常场景 ≥1；每条含 ≥2 个「假如」三段式验收 |
 | 5 | 拷问与范围确认留痕 | 会话内 4 批呈现记录＋三栏清单呈现记录；采纳推荐的问号已写入 PRD 来源列 | 4 批＋1 次三栏，缺一不可 |
 | 6 | 闸门呈现与写回留痕 | `grep -o "G2-requirements" idea2launch/state.json`（且 gates 最新一条该 gate 的 status ∈ {signed, returned}） | 呈现记录在会话中；盘上有 G2 记录 |
 

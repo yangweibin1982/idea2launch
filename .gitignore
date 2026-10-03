@@ -1,0 +1,12 @@
+# 流程产物（侦察/战役报告、扫描状态、本地索引）不入开源仓
+.squad/
+.codegraph/
+.mimosa/
+
+# 依赖与运行产物
+node_modules/
+*.log
+
+# 操作系统杂物
+.DS_Store
+Thumbs.db

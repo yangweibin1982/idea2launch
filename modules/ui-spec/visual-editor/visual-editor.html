@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原型可视化编辑器 — idea2launch</title>
+<link rel="stylesheet" href="lib/grapes.min.css">
+<style>
+/* ===== 编辑器壳自身 token（对齐 ui-spec §9.1 默认基座） ===== */
+:root {
+  --i-primary: #2563eb;
+  --i-primary-hover: #1d4ed8;
+  --i-gray-900: #111827;
+  --i-gray-600: #4b5563;
+  --i-gray-400: #9ca3af;
+  --i-gray-200: #e5e7eb;
+  --i-gray-100: #f3f4f6;
+  --i-gray-50: #f9fafb;
+  --i-surface: #ffffff;
+  --i-danger: #b91c1c;
+  --i-radius-md: 8px;
+  --i-radius-lg: 12px;
+  --i-shadow-1: 0 1px 2px rgba(17, 24, 39, 0.05);
+  --i-shadow-2: 0 4px 12px rgba(17, 24, 39, 0.08);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  color: var(--i-gray-900);
+  background: var(--i-gray-50);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+button, select, input, textarea { font-family: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+/* ===== 顶栏 ===== */
+#topbar {
+  background: var(--i-surface);
+  border-bottom: 1px solid var(--i-gray-200);
+  flex: 0 0 auto;
+}
+.tb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  flex-wrap: wrap;
+}
+.tb-row + .tb-row { border-top: 1px solid var(--i-gray-100); }
+.brand { font-weight: 700; font-size: 15px; white-space: nowrap; }
+.spacer { flex: 1; }
+#status { font-size: 13px; color: var(--i-gray-600); min-width: 0; }
+#status.is-ok { color: #15803d; }
+#status.is-err { color: var(--i-danger); }
+
+.btn {
+  display: inline-block;
+  padding: 7px 14px;
+  border: 1px solid var(--i-gray-200);
+  border-radius: var(--i-radius-md);
+  background: var(--i-surface);
+  color: var(--i-gray-900);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.btn:hover { border-color: var(--i-gray-400); background: var(--i-gray-50); }
+.btn.primary {
+  background: var(--i-primary);
+  border-color: var(--i-primary);
+  color: #fff;
+  font-weight: 600;
+}
+.btn.primary:hover { background: var(--i-primary-hover); }
+.btn.danger-ghost { color: var(--i-danger); }
+.btn.danger-ghost:hover { border-color: var(--i-danger); }
+
+#file-input {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.ctl-label { font-size: 13px; color: var(--i-gray-600); white-space: nowrap; }
+.seg { display: inline-flex; border: 1px solid var(--i-gray-200); border-radius: var(--i-radius-md); overflow: hidden; }
+.seg button {
+  border: 0;
+  background: var(--i-surface);
+  color: var(--i-gray-600);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-right: 1px solid var(--i-gray-100);
+}
+.seg button:last-child { border-right: 0; }
+.seg button.active { background: var(--i-primary); color: #fff; font-weight: 600; }
+#sel-preset {
+  padding: 6px 8px;
+  border: 1px solid var(--i-gray-200);
+  border-radius: var(--i-radius-md);
+  font-size: 13px;
+  background: var(--i-surface);
+}
+#color-swatches { display: inline-flex; gap: 5px; align-items: center; }
+.swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--i-gray-200);
+  padding: 0;
+}
+.swatch.active { box-shadow: 0 0 0 2px var(--i-primary); }
+
+/* ===== 三步引导条 ===== */
+#guide {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 14px;
+  background: #eff6ff;
+  border-bottom: 1px solid #bfdbfe;
+  font-size: 13px;
+  color: #1e40af;
+  flex: 0 0 auto;
+}
+#guide .g-step b {
+  display: inline-block;
+  width: 18px; height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--i-primary);
+  color: #fff;
+  font-size: 12px;
+  margin-right: 5px;
+}
+#guide button { margin-left: auto; }
+
+/* ===== 主区 ===== */
+main { flex: 1 1 auto; min-height: 0; display: flex; }
+#landing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#dropzone {
+  width: min(640px, 88%);
+  border: 2px dashed var(--i-gray-200);
+  border-radius: var(--i-radius-lg);
+  background: var(--i-surface);
+  padding: 48px 32px;
+  text-align: center;
+  box-shadow: var(--i-shadow-1);
+}
+#dropzone.dragging { border-color: var(--i-primary); background: #eff6ff; }
+#dropzone h2 { font-size: 18px; margin: 0 0 10px; }
+#dropzone p { font-size: 13px; color: var(--i-gray-600); margin: 6px 0 18px; }
+#editor-area { flex: 1 1 auto; min-height: 0; display: none; }
+#editor-area.show { display: flex; flex-direction: column; }
+#gjs { flex: 1 1 auto; min-height: 0; }
+
+/* ===== GrapesJS 默认 UI 隐藏（薄壳原则：默认面板全部不用） ===== */
+.gjs-pn-panel { display: none !important; }
+.gjs-badge { display: none !important; }
+.gjs-rte-toolbar { display: none !important; }
+/* 浮动工具条（GrapesJS Toolbar，仅承载自建动作按钮） */
+.gjs-toolbar {
+  background: #0f172a;
+  border-radius: var(--i-radius-md);
+  padding: 4px;
+  box-shadow: var(--i-shadow-2);
+}
+.gjs-toolbar-item {
+  width: auto !important;
+  padding: 6px 10px !important;
+  color: #fff !important;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.gjs-toolbar-item:hover { background: var(--i-primary); }
+
+/* ===== 弹窗 ===== */
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+#modal[hidden] { display: none; }
+.modal-card {
+  width: min(520px, 92vw);
+  background: var(--i-surface);
+  border-radius: var(--i-radius-lg);
+  box-shadow: var(--i-shadow-2);
+  padding: 18px 20px;
+}
+#modal-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+#modal-body .m-hint { font-size: 13px; color: var(--i-gray-600); margin: 4px 0 10px; }
+#modal-body textarea, #modal-body input[type="text"] {
+  width: 100%;
+  border: 1px solid var(--i-gray-200);
+  border-radius: var(--i-radius-md);
+  padding: 8px 10px;
+  font-size: 14px;
+  resize: vertical;
+}
+#modal-body textarea:focus, #modal-body input[type="text"]:focus {
+  outline: 2px solid var(--i-primary);
+  outline-offset: 0;
+  border-color: var(--i-primary);
+}
+.m-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+#m-imgfile {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.m-file-name { font-size: 12px; color: var(--i-gray-600); }
+.m-preview { max-width: 100%; max-height: 120px; border-radius: 6px; border: 1px solid var(--i-gray-100); }
+.modal-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div class="tb-row">
+    <span class="brand">原型可视化编辑器</span>
+    <input type="file" id="file-input" accept=".html,.htm,text/html">
+    <label class="btn" for="file-input" id="btn-open">打开原型文件</label>
+    <span id="status">未载入原型</span>
+    <span class="spacer"></span>
+    <button class="btn" id="btn-copy-plain" disabled>复制修改说明</button>
+    <button class="btn primary" id="btn-export" disabled>导出修改包</button>
+    <button class="btn danger-ghost" id="btn-reset" disabled>重置</button>
+  </div>
+  <div class="tb-row">
+    <span class="ctl-label">主题预设</span>
+    <select id="sel-preset" disabled>
+      <option value="keep">跟随原型（默认）</option>
+      <option value="base">默认基座</option>
+      <option value="fresh">清爽工具风</option>
+      <option value="warm">温暖内容风</option>
+    </select>
+    <span class="ctl-label">主题色</span>
+    <span id="color-swatches"></span>
+    <span class="ctl-label">圆角</span>
+    <span class="seg" id="seg-radius"></span>
+    <span class="ctl-label">密度</span>
+    <span class="seg" id="seg-density"></span>
+    <span class="spacer"></span>
+    <span class="ctl-label">视口</span>
+    <span class="seg" id="seg-device"></span>
+    <button class="btn" id="btn-undo" disabled>撤销</button>
+    <button class="btn" id="btn-redo" disabled>重做</button>
+  </div>
+</header>
+
+<div id="guide" hidden>
+  <span class="g-step"><b>1</b>打开原型文件</span>
+  <span class="g-step"><b>2</b>单击点选要修改的部分，用浮出工具条修改</span>
+  <span class="g-step"><b>3</b>导出修改包，把文件拖回项目对话</span>
+  <button class="btn" id="guide-hide">知道了</button>
+</div>
+
+<main>
+  <div id="landing">
+    <div id="dropzone">
+      <h2>把原型 HTML 文件拖到这里</h2>
+      <p>或者点击下面的按钮选择文件。载入后即可点选页面内容直接修改。</p>
+      <label class="btn primary" for="file-input">选择文件</label>
+    </div>
+  </div>
+  <div id="editor-area">
+    <div id="gjs"></div>
+  </div>
+</main>
+
+<div id="modal" hidden>
+  <div class="modal-card">
+    <div id="modal-title"></div>
+    <div id="modal-body"></div>
+    <div class="modal-foot" id="modal-foot"></div>
+  </div>
+</div>
+
+<script src="lib/grapes.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+   * idea2launch 原型可视化编辑器（票 V4）
+   * 架构：GrapesJS 0.23.6 内核 + 薄自建新手 UI（默认面板全部不用）。
+   * 原型 token CSS 不进 GrapesJS 解析管道，由本壳持有原文（verbatim），
+   * 注入 canvas 头部的 <style id="i2l-token-style">；导出时原文拼回。
+   * ===================================================================== */
+
+  // ---------- 内置 token 预设（抄自 modules/ui-spec/ui-spec.md §9，同名变量三套块） ----------
+  var PRESET_CSS = {
+    base: ':root {\
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;\
+  --font-heading: var(--font-sans);\
+  --gray-50: #f9fafb;  --gray-100: #f3f4f6;  --gray-200: #e5e7eb;\
+  --gray-300: #d1d5db; --gray-400: #9ca3af;  --gray-500: #6b7280;\
+  --gray-600: #4b5563; --gray-700: #374151;  --gray-800: #1f2937;\
+  --gray-900: #111827; --gray-950: #030712;\
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;\
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;\
+  --text-xs: 12px; --text-sm: 14px; --text-md: 16px; --text-lg: 18px;\
+  --text-xl: 20px; --text-2xl: 24px; --text-3xl: 30px; --text-4xl: 36px;\
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;\
+  --radius-full: 9999px;\
+  --duration-fast: 150ms; --duration-base: 250ms; --duration-slow: 400ms;\
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);\
+  --shadow-1: 0 1px 2px rgba(17, 24, 39, 0.05);\
+  --shadow-2: 0 4px 12px rgba(17, 24, 39, 0.08);\
+  --shadow-3: 0 12px 32px rgba(17, 24, 39, 0.14);\
+  --bg-canvas: var(--gray-50);\
+  --bg-surface: #ffffff;\
+  --bg-surface-hover: var(--gray-100);\
+  --text-primary: var(--gray-900);\
+  --text-secondary: var(--gray-600);\
+  --text-disabled: var(--gray-400);\
+  --border-subtle: var(--gray-200);\
+  --border-strong: var(--gray-400);\
+  --primary: #2563eb;\
+  --primary-hover: #1d4ed8;\
+  --primary-active: #1e40af;\
+  --primary-fg: #ffffff;\
+  --success-bg: #f0fdf4; --success-fg: #15803d; --success-border: #bbf7d0;\
+  --warning-bg: #fffbeb; --warning-fg: #b45309; --warning-border: #fde68a;\
+  --danger-bg:  #fef2f2; --danger-fg:  #b91c1c; --danger-border:  #fecaca;\
+  --info-bg:    #eff6ff; --info-fg:    #1d4ed8; --info-border:    #bfdbfe;\
+  --accent-bg:  #eff6ff; --accent-fg:  #1d4ed8; --accent-border:  #bfdbfe;\
+  --z-dropdown: 1000; --z-sticky: 1020; --z-drawer: 1040;\
+  --z-modal: 1060; --z-toast: 1080; --z-tooltip: 1100;\
+}',
+    fresh: ':root {\
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;\
+  --font-heading: var(--font-sans);\
+  --gray-50: #f9fafb;  --gray-100: #f3f4f6;  --gray-200: #e5e7eb;\
+  --gray-300: #d1d5db; --gray-400: #9ca3af;  --gray-500: #6b7280;\
+  --gray-600: #4b5563; --gray-700: #374151;  --gray-800: #1f2937;\
+  --gray-900: #111827; --gray-950: #030712;\
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;\
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;\
+  --text-xs: 12px; --text-sm: 14px; --text-md: 16px; --text-lg: 18px;\
+  --text-xl: 20px; --text-2xl: 24px; --text-3xl: 30px; --text-4xl: 36px;\
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;\
+  --radius-full: 9999px;\
+  --duration-fast: 150ms; --duration-base: 250ms; --duration-slow: 400ms;\
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);\
+  --shadow-1: 0 1px 2px rgba(17, 24, 39, 0.05);\
+  --shadow-2: 0 4px 12px rgba(17, 24, 39, 0.08);\
+  --shadow-3: 0 12px 32px rgba(17, 24, 39, 0.14);\
+  --bg-canvas: #ffffff;\
+  --bg-surface: #ffffff;\
+  --bg-surface-hover: var(--gray-50);\
+  --text-primary: var(--gray-900);\
+  --text-secondary: var(--gray-600);\
+  --text-disabled: var(--gray-400);\
+  --border-subtle: var(--gray-200);\
+  --border-strong: var(--gray-400);\
+  --primary: #2563eb;\
+  --primary-hover: #1d4ed8;\
+  --primary-active: #1e40af;\
+  --primary-fg: #ffffff;\
+  --success-bg: #f0fdf4; --success-fg: #15803d; --success-border: #bbf7d0;\
+  --warning-bg: #fffbeb; --warning-fg: #b45309; --warning-border: #fde68a;\
+  --danger-bg:  #fef2f2; --danger-fg:  #b91c1c; --danger-border:  #fecaca;\
+  --info-bg:    #eff6ff; --info-fg:    #1d4ed8; --info-border:    #bfdbfe;\
+  --accent-bg:  #eff6ff; --accent-fg:  #1d4ed8; --accent-border:  #bfdbfe;\
+  --z-dropdown: 1000; --z-sticky: 1020; --z-drawer: 1040;\
+  --z-modal: 1060; --z-toast: 1080; --z-tooltip: 1100;\
+}',
+    warm: ':root {\
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;\
+  --font-heading: Georgia, "Noto Serif SC", "Songti SC", "SimSun", serif;\
+  --gray-50: #fafaf9;  --gray-100: #f5f5f4;  --gray-200: #e7e5e4;\
+  --gray-300: #d6d3d1; --gray-400: #a8a29e;  --gray-500: #78716c;\
+  --gray-600: #57534e; --gray-700: #44403c;  --gray-800: #292524;\
+  --gray-900: #1c1917; --gray-950: #0c0a09;\
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;\
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;\
+  --text-xs: 12px; --text-sm: 14px; --text-md: 16px; --text-lg: 18px;\
+  --text-xl: 20px; --text-2xl: 24px; --text-3xl: 30px; --text-4xl: 36px;\
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 20px;\
+  --radius-full: 9999px;\
+  --duration-fast: 150ms; --duration-base: 250ms; --duration-slow: 400ms;\
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);\
+  --shadow-1: 0 1px 3px rgba(28, 25, 23, 0.06);\
+  --shadow-2: 0 6px 16px rgba(28, 25, 23, 0.08);\
+  --shadow-3: 0 16px 40px rgba(28, 25, 23, 0.12);\
+  --bg-canvas: var(--gray-50);\
+  --bg-surface: #ffffff;\
+  --bg-surface-hover: var(--gray-100);\
+  --text-primary: var(--gray-900);\
+  --text-secondary: var(--gray-600);\
+  --text-disabled: var(--gray-400);\
+  --border-subtle: var(--gray-200);\
+  --border-strong: var(--gray-400);\
+  --primary: #c2410c;\
+  --primary-hover: #9a3412;\
+  --primary-active: #7c2d12;\
+  --primary-fg: #ffffff;\
+  --success-bg: #f0fdf4; --success-fg: #15803d; --success-border: #bbf7d0;\
+  --warning-bg: #fffbeb; --warning-fg: #b45309; --warning-border: #fde68a;\
+  --danger-bg:  #fef2f2; --danger-fg:  #b91c1c; --danger-border:  #fecaca;\
+  --info-bg:    #eff6ff; --info-fg:    #1d4ed8; --info-border:    #bfdbfe;\
+  --accent-bg:  #fef3ec; --accent-fg:  #9a3412; --accent-border:  #fdd7b8;\
+  --z-dropdown: 1000; --z-sticky: 1020; --z-drawer: 1040;\
+  --z-modal: 1060; --z-toast: 1080; --z-tooltip: 1100;\
+}'
+  };
+  var PRESET_LABEL = { base: '默认基座', fresh: '清爽工具风', warm: '温暖内容风' };
+
+  // ---------- 主题色候选（预校：全部与白字对比 ≥ 4.5:1，正文 AA） ----------
+  var COLOR_SWATCHES = [
+    { c: '#2563eb', n: '蓝（默认）' },
+    { c: '#1d4ed8', n: '深蓝' },
+    { c: '#0e7490', n: '青碧' },
+    { c: '#047857', n: '翠绿' },
+    { c: '#15803d', n: '深绿' },
+    { c: '#b45309', n: '琥珀' },
+    { c: '#c2410c', n: '暖橘' },
+    { c: '#be123c', n: '玫红' },
+    { c: '#6d28d9', n: '紫罗兰' },
+    { c: '#334155', n: '石板灰' }
+  ];
+  // 主题色别名变量组（命中即替换；色值按档位派生）
+  var COLOR_BASE = ['--primary', '--accent', '--brand', '--brand-500', '--color-primary', '--main-color'];
+  var COLOR_HOVER = ['--primary-hover', '--accent-hover', '--brand-600'];
+  var COLOR_ACTIVE = ['--primary-active', '--accent-active', '--brand-700'];
+
+  // ---------- 圆角三档 / 密度两档（映射变量组，4px 基网格） ----------
+  var RADIUS_STEPS = {
+    small:  { '--radius-sm': '2px', '--radius-md': '4px', '--radius-lg': '8px',  '--radius-xl': '12px' },
+    medium: { '--radius-sm': '4px', '--radius-md': '8px', '--radius-lg': '12px', '--radius-xl': '16px' },
+    large:  { '--radius-sm': '6px', '--radius-md': '10px', '--radius-lg': '16px', '--radius-xl': '20px' }
+  };
+  var RADIUS_LABEL = { small: '小圆角', medium: '中圆角', large: '大圆角' };
+  var DENSITY_STEPS = {
+    cozy:    { '--space-1': '4px', '--space-2': '8px',  '--space-3': '12px', '--space-4': '16px',
+               '--space-6': '24px', '--space-8': '32px', '--space-12': '48px', '--space-16': '64px' },
+    compact: { '--space-1': '4px', '--space-2': '6px',  '--space-3': '8px',  '--space-4': '12px',
+               '--space-6': '20px', '--space-8': '24px', '--space-12': '36px', '--space-16': '48px' }
+  };
+  var DENSITY_LABEL = { cozy: '宽松', compact: '紧凑' };
+
+  var ACTION_ENUM = ['edit-text', 'delete', 'move-up', 'move-down', 'replace-image', 'apply-preset', 'add', 'nl-note'];
+  var THEME_PID = '__theme__';     // 全局 token 操作的占位 pid（规格 §7 pid 非空）
+  var SYSTEM_PID = '__global__';   // 撤销/重做等系统级操作占位 pid
+  var BASE_RESET = '* { box-sizing: border-box; }\nbody { margin: 0; }';
+  var CANVAS_UI_CSS = '.gjs-badge{display:none !important}.gjs-rte-toolbar{display:none !important}';
+  var MAX_IMAGE_BYTES = 2 * 1024 * 1024; // 本地图片内嵌上限 2MB，防导出包膨胀
+
+  // ---------- 状态 ----------
+  var state = {
+    editor: null,
+    prototypeFile: '',
+    title: '',
+    pageName: 'page',
+    protoVars: {},        // 原型 :root 变量表（载入时解析）
+    protoCssSansRoot: '', // 原型 CSS 去掉 :root 块后的原文
+    tokenCssFull: '',     // 当前完整 token CSS（reset + :root 组合 + 原型其余 CSS）
+    preset: 'keep',
+    color: null,
+    colorLabel: '',
+    radius: null,
+    density: null,
+    events: [],
+    seq: 0,
+    newSeq: 0,
+    recording: false,
+    muting: false,
+    pidLabels: {}         // pid → 大白话标签（载入快照，供修改说明用）
+  };
+  var exportsMirror = { html: null, json: null };
+  var plainMirror = '';
+  var contentCache = new WeakMap();
+  var modalCtx = null;   // 当前弹窗上下文 { type, comp, target, dataUrl }
+
+  function $(id) { return document.getElementById(id); }
+  function setStatus(msg, cls) {
+    var el = $('status');
+    el.textContent = msg;
+    el.className = cls || '';
+  }
+  function flash(msg, isErr) {
+    setStatus(msg, isErr ? 'is-err' : 'is-ok');
+    if (!isErr) setTimeout(function () {
+      if ($('status').textContent === msg) refreshStatus();
+    }, 4000);
+  }
+  function refreshStatus() {
+    if (!state.prototypeFile) return;
+    setStatus('已载入：' + state.prototypeFile + ' · 已做 ' + state.events.length + ' 处修改', 'is-ok');
+  }
+  function trunc(s, n) {
+    s = String(s == null ? '' : s);
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+
+  // ---------- 颜色工具 ----------
+  function shade(hex, pct) {
+    var n = String(hex).replace('#', '');
+    if (n.length === 3) n = n.replace(/./g, function (c) { return c + c; });
+    var r = parseInt(n.slice(0, 2), 16), g = parseInt(n.slice(2, 4), 16), b = parseInt(n.slice(4, 6), 16);
+    function ch(v) {
+      var t = pct < 0 ? v * (1 + pct / 100) : v + (255 - v) * (pct / 100);
+      return Math.round(Math.max(0, Math.min(255, t)));
+    }
+    function hx(v) { return ('0' + v.toString(16)).slice(-2); }
+    return '#' + hx(ch(r)) + hx(ch(g)) + hx(ch(b));
+  }
+  function applyColorVars(vars, color) {
+    var hit = false, i, k;
+    for (i = 0; i < COLOR_BASE.length; i++) { k = COLOR_BASE[i]; if (k in vars) { vars[k] = color; hit = true; } }
+    for (i = 0; i < COLOR_HOVER.length; i++) { k = COLOR_HOVER[i]; if (k in vars) { vars[k] = shade(color, -12); hit = true; } }
+    for (i = 0; i < COLOR_ACTIVE.length; i++) { k = COLOR_ACTIVE[i]; if (k in vars) { vars[k] = shade(color, -24); hit = true; } }
+    if (!hit) { // 原型没有可识别的主色变量时，至少落一套标准名，便于后续复校
+      vars['--primary'] = color;
+      vars['--primary-hover'] = shade(color, -12);
+      vars['--primary-active'] = shade(color, -24);
+    }
+  }
+
+  // ---------- token CSS 组合 ----------
+  function parseRootVars(css) {
+    var out = {};
+    var m = /:root\s*\{([^}]*)\}/.exec(css);
+    if (!m) return out;
+    var re = /--[\w-]+\s*:\s*[^;{}]+;?/g, d;
+    while ((d = re.exec(m[1]))) {
+      var kv = d[0].replace(/;\s*$/, '').split(':');
+      out[kv[0].trim()] = kv.slice(1).join(':').trim();
+    }
+    return out;
+  }
+  function composeRootBlock() {
+    var vars = Object.assign({}, state.protoVars);
+    if (state.preset !== 'keep') Object.assign(vars, parseRootVars(PRESET_CSS[state.preset]));
+    if (state.radius) Object.assign(vars, RADIUS_STEPS[state.radius]);
+    if (state.density) Object.assign(vars, DENSITY_STEPS[state.density]);
+    if (state.color) applyColorVars(vars, state.color);
+    var keys = Object.keys(vars);
+    var lines = [];
+    for (var i = 0; i < keys.length; i++) lines.push('  ' + keys[i] + ': ' + vars[keys[i]] + ';');
+    return ':root {\n' + lines.join('\n') + '\n}';
+  }
+  function refreshTokenCss() {
+    state.tokenCssFull = BASE_RESET + '\n' + composeRootBlock() + '\n' + state.protoCssSansRoot;
+    ensureTokenStyle();
+  }
+
+  // ---------- canvas 内样式注入（token CSS + 壳级 UI 隐藏） ----------
+  function canvasDoc() {
+    var ed = state.editor;
+    return (ed && ed.Canvas && ed.Canvas.getDocument()) || null;
+  }
+  function ensureTokenStyle() {
+    var doc = canvasDoc();
+    if (!doc || !doc.head) return;
+    var el = doc.getElementById('i2l-token-style');
+    if (!el) {
+      el = doc.createElement('style');
+      el.id = 'i2l-token-style';
+      doc.head.appendChild(el);
+    }
+    if (el.textContent !== state.tokenCssFull) el.textContent = state.tokenCssFull;
+  }
+  function ensureCanvasUi() {
+    var doc = canvasDoc();
+    if (!doc || !doc.head) return;
+    var el = doc.getElementById('i2l-canvas-ui');
+    if (!el) {
+      el = doc.createElement('style');
+      el.id = 'i2l-canvas-ui';
+      el.textContent = CANVAS_UI_CSS;
+      doc.head.appendChild(el);
+    }
+  }
+
+  // ---------- 组件工具 ----------
+  function pidOf(comp) {
+    var c = comp;
+    while (c && typeof c.getAttributes === 'function') {
+      var attrs = c.getAttributes() || {};
+      if (attrs['data-pid']) return attrs['data-pid'];
+      c = (typeof c.parent === 'function') ? c.parent() : null;
+    }
+    return '';
+  }
+  function parentOf(comp) {
+    return (comp && typeof comp.parent === 'function') ? comp.parent() : null;
+  }
+  function walkComps(comp, fn) {
+    fn(comp);
+    var kids = comp.components && comp.components();
+    if (kids && kids.length) {
+      for (var i = 0; i < kids.length; i++) walkComps(kids.at(i), fn);
+    }
+  }
+  function contentOf(comp) {
+    var parts = [];
+    walkComps(comp, function (c) {
+      var t = c.get && c.get('content');
+      if (typeof t === 'string' && t.length) parts.push(t);
+    });
+    return parts.join('').slice(0, 500);
+  }
+  function collectPids(exclude) {
+    var map = {};
+    var ed = state.editor;
+    var wrapper = ed && ed.DomComponents.getWrapper();
+    if (!wrapper) return map;
+    walkComps(wrapper, function (c) {
+      if (exclude && (c === exclude)) return;
+      var a = c.getAttributes && c.getAttributes();
+      if (a && a['data-pid']) map[a['data-pid']] = 1;
+    });
+    return map;
+  }
+  // 规格 §6：新增元素分配 <page>-new-<seq>；克隆产生的重复 pid 一并重排
+  function ensurePid(comp) {
+    var attrs = comp.getAttributes ? (comp.getAttributes() || {}) : {};
+    var pid = attrs['data-pid'];
+    var others = collectPids(comp);
+    var needNew = !pid || others[pid];
+    if (!needNew) return pid;
+    var np;
+    do { np = state.pageName + '-new-' + (++state.newSeq); } while (others[np]);
+    if (comp.addAttributes) comp.addAttributes({ 'data-pid': np });
+    return np;
+  }
+  function getTextTarget(comp) {
+    if (!comp) return null;
+    if (comp.is && comp.is('textnode')) return comp;
+    var kids = comp.components && comp.components();
+    if (kids && kids.length === 1 && kids.at(0).is && kids.at(0).is('textnode')) return kids.at(0);
+    return comp;
+  }
+  function findImageTarget(comp) {
+    if (!comp) return null;
+    if (comp.is && comp.is('image')) return comp;
+    var imgs = comp.find ? comp.find('img') : [];
+    return imgs && imgs.length ? imgs[0] : null;
+  }
+  function labelText(comp) {
+    var t = contentOf(comp).replace(/\s+/g, ' ').trim();
+    return t ? trunc(t, 24) : (comp.get('tagName') || '区块');
+  }
+  function labelOf(pid) { return state.pidLabels[pid] || pid; }
+
+  // ---------- 事件流记录（规格 §7 schema） ----------
+  function pushEvent(action, comp, before, after, pidOverride, note) {
+    state.events.push({
+      seq: ++state.seq,
+      ts: new Date().toISOString(),
+      pid: pidOverride || pidOf(comp) || '',
+      action: action,
+      before: before || '',
+      after: after || '',
+      note: note || ''
+    });
+    refreshStatus();
+  }
+
+  // ---------- 编辑器初始化与钩子 ----------
+  function initEditor() {
+    var ed = grapesjs.init({
+      container: '#gjs',
+      height: '100%',
+      width: 'auto',
+      storageManager: false,      // 禁本地持久化（file:// 干净行为）
+      plugins: [],
+      protectedCss: '',           // token CSS 由本壳直管，不走 protectedCss
+      panels: { defaults: [] },   // 默认面板全部不用
+      showToolbar: true,
+      telemetry: false,           // 关内核遥测（断网语义：零外部请求）
+      cssIcons: '',               // 关内核默认 Font Awesome CDN 注入
+      assetManager: {             // 禁露 GrapesJS asset manager 全貌：换图走自建弹窗
+        upload: false,
+        assets: [],
+        custom: {
+          open: function () {
+            var sel = state.editor.getSelected();
+            var img = findImageTarget(sel);
+            if (img) openImageModal(img);
+          },
+          close: function () {}
+        }
+      },
+      deviceManager: {
+        devices: [
+          { id: 'desktop', name: '桌面 1440', width: '1440px' },
+          { id: 'tablet', name: '平板 768', width: '768px', widthMedia: '768px' },
+          { id: 'mobile', name: '手机 375', width: '375px', widthMedia: '375px' }
+        ]
+      }
+    });
+    state.editor = ed;
+    attachHooks(ed);
+    // 自建工具条命令（Commands 挂在编辑器实例上，非全局对象）
+    ed.Commands.add('i2l-edit-text', { run: function (e) { openTextModal(e.getSelected()); } });
+    ed.Commands.add('i2l-image', { run: function (e) {
+      var img = findImageTarget(e.getSelected());
+      if (img) openImageModal(img); else flash('未找到可更换的图片', true);
+    } });
+    ed.Commands.add('i2l-move-up', { run: function (e) { doMove(e.getSelected(), -1); } });
+    ed.Commands.add('i2l-move-down', { run: function (e) { doMove(e.getSelected(), 1); } });
+    ed.Commands.add('i2l-delete', { run: function (e) {
+      var c = e.getSelected();
+      if (c) c.remove(); // 事件由 remove 钩子记录
+    } });
+    try { ed.setDevice('desktop'); } catch (e) { /* 视口保持容器宽 */ }
+    syncDeviceSeg('desktop');
+    return ed;
+  }
+
+  function buildToolbar(comp) {
+    var ed = state.editor;
+    var wrapper = ed && ed.DomComponents.getWrapper();
+    if (!comp || comp === wrapper) return [];
+    function tb(title, cmd) {
+      return { attributes: { title: title }, label: title, command: cmd };
+    }
+    var btns = [];
+    var tt = getTextTarget(comp);
+    var hasText = (comp.is && (comp.is('text') || comp.is('textnode'))) || (tt && tt !== comp) ||
+      (comp.get && typeof comp.get('content') === 'string' && comp.get('content').length);
+    if (hasText) btns.push(tb('改字', 'i2l-edit-text'));
+    if (findImageTarget(comp)) btns.push(tb('换图', 'i2l-image'));
+    btns.push(tb('上移', 'i2l-move-up'), tb('下移', 'i2l-move-down'), tb('删除', 'i2l-delete'));
+    return btns;
+  }
+
+  function attachHooks(ed) {
+    // 每个组件创建时即换上自建工具条（选中时 GrapesJS 读 comp 的 toolbar 属性渲染）
+    ed.on('component:create', function (comp) {
+      try { comp.set('toolbar', buildToolbar(comp)); } catch (e) { /* 忽略个别组件异常 */ }
+    });
+    ed.on('component:selected', function (comp) {
+      try { comp.set('toolbar', buildToolbar(comp)); } catch (e) { /* 同上 */ }
+    });
+
+    // 载入解析阶段 recording=false，初始 add/update 不计入事件流
+    var removedComps = new WeakSet();
+    var addedRoots = new WeakSet();
+    ed.on('component:add', function (comp) {
+      if (!state.recording || state.muting) return;
+      var p = parentOf(comp), isCascade = false;
+      while (p) { if (addedRoots.has(p)) { isCascade = true; break; } p = parentOf(p); }
+      ensurePid(comp);
+      addedRoots.add(comp);
+      if (isCascade) return; // 批量新增的子级不重复记事件
+      pushEvent('add', comp, '', contentOf(comp));
+    });
+    // 删除容器时 GrapesJS 逐后代触发 component:remove：沿祖先链查已删集合，命中即级联后代
+    ed.on('component:remove', function (comp) {
+      if (!state.recording || state.muting) return;
+      var p = parentOf(comp);
+      while (p) {
+        if (removedComps.has(p)) { removedComps.add(comp); return; }
+        p = parentOf(p);
+      }
+      removedComps.add(comp);
+      pushEvent('delete', comp, contentOf(comp), '');
+    });
+    var handleContent = function (comp) {
+      if (!state.recording || state.muting) return;
+      var after = (comp.get && comp.get('content')) || '';
+      var before = contentCache.has(comp) ? contentCache.get(comp) : '';
+      if (before === after) return;
+      var last = state.events[state.events.length - 1];
+      // 去重：update 与 update:content 双触发同一变更时只记一条
+      if (last && last.action === 'edit-text' && last.pid === pidOf(comp) &&
+          last.after === after && (Date.now() - new Date(last.ts).getTime()) < 200) return;
+      pushEvent('edit-text', comp, before, after);
+      contentCache.set(comp, after);
+    };
+    ed.on('component:update', function (comp, changed) {
+      var prop = typeof changed === 'string' ? changed : (changed && changed.key) || '';
+      if (prop === 'content') handleContent(comp);
+    });
+    ed.on('component:update:content', handleContent);
+
+    ed.on('update', function () { refreshUndoButtons(); });
+    // 画布重渲染后自愈式回注样式
+    ed.on('canvas:frame:load', function () { ensureCanvasUi(); ensureTokenStyle(); });
+  }
+
+  function snapshotContents() {
+    var ed = state.editor;
+    var wrapper = ed && ed.DomComponents.getWrapper();
+    if (!wrapper) return;
+    walkComps(wrapper, function (c) {
+      var t = c.get && c.get('content');
+      if (typeof t === 'string') contentCache.set(c, t);
+      var a = c.getAttributes ? c.getAttributes() : {};
+      if (a['data-pid'] && !state.pidLabels[a['data-pid']]) state.pidLabels[a['data-pid']] = labelText(c);
+    });
+  }
+
+  // ---------- 载入原型 ----------
+  function loadPrototype(text, fileName) {
+    var doc = new DOMParser().parseFromString(text, 'text/html');
+    var styleText = Array.prototype.map.call(
+      doc.querySelectorAll('style'), function (s) { return s.textContent; }
+    ).join('\n');
+    var titleEl = doc.querySelector('title');
+    state.title = titleEl ? titleEl.textContent : (fileName || '原型');
+    state.prototypeFile = fileName || 'prototype.html';
+    state.protoVars = parseRootVars(styleText);
+    var rootMatch = /:root\s*\{[^}]*\}/.exec(styleText);
+    state.protoCssSansRoot = rootMatch ? styleText.replace(rootMatch[0], '') : styleText;
+    state.pageName = (fileName || 'page').replace(/\.html?$/i, '').replace(/[^\w-]+/g, '-').toLowerCase() || 'page';
+
+    state.preset = 'keep';
+    state.color = null;
+    state.colorLabel = '';
+    state.radius = null;
+    state.density = null;
+    state.events = [];
+    state.seq = 0;
+    state.newSeq = 0;
+    state.recording = false;
+    state.pidLabels = {};
+
+    if (state.editor) state.editor.destroy();
+    var ed = initEditor();
+    refreshTokenCss();
+    state.recording = false;
+    ed.setComponents(doc.body.innerHTML);
+
+    setTimeout(function () {
+      ensureCanvasUi();
+      ensureTokenStyle();
+      snapshotContents();
+      state.recording = true; // 就绪后开始记录用户操作
+      setLoadedUI(true);
+      syncControlValues();
+      refreshUndoButtons();
+      refreshStatus();
+    }, 300);
+  }
+
+  function setLoadedUI(loaded) {
+    $('landing').style.display = loaded ? 'none' : 'flex';
+    $('editor-area').className = loaded ? 'show' : '';
+    $('guide').hidden = !loaded;
+    ['btn-copy-plain', 'btn-export', 'btn-reset', 'sel-preset'].forEach(function (id) {
+      $(id).disabled = !loaded;
+    });
+    $('file-input').disabled = loaded; // 载入后禁再改文件直至重置
+    Array.prototype.forEach.call(document.querySelectorAll('#seg-radius button, #seg-density button, #seg-device button'), function (b) {
+      b.disabled = !loaded;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.swatch'), function (b) {
+      b.disabled = !loaded;
+    });
+  }
+  function syncControlValues() {
+    $('sel-preset').value = state.preset;
+    Array.prototype.forEach.call(document.querySelectorAll('#seg-radius button'), function (b) {
+      b.className = b.getAttribute('data-value') === (state.radius || '') ? 'active' : '';
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#seg-density button'), function (b) {
+      b.className = b.getAttribute('data-value') === (state.density || '') ? 'active' : '';
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.swatch'), function (b) {
+      b.className = 'swatch' + (b.getAttribute('data-color') === state.color ? ' active' : '');
+    });
+  }
+  function syncDeviceSeg(id) {
+    Array.prototype.forEach.call(document.querySelectorAll('#seg-device button'), function (b) {
+      b.className = b.getAttribute('data-device') === id ? 'active' : '';
+    });
+  }
+
+  // ---------- 动作：移动 / 删除 / 改字 / 换图 ----------
+  function doMove(comp, delta) {
+    if (!comp) return;
+    var parent = parentOf(comp);
+    if (!parent) { flash('该元素没有可调整顺序的位置', true); return; }
+    var coll = parent.components();
+    var idx = -1, i;
+    for (i = 0; i < coll.length; i++) { if (coll.at(i) === comp) { idx = i; break; } }
+    var to = idx + delta;
+    if (idx < 0 || to < 0 || to >= coll.length) {
+      flash(delta < 0 ? '已经是最上面了' : '已经是最下面了', true);
+      return;
+    }
+    state.muting = true; // comp.move 内部是 remove+append，静默级联事件，只记一条移动
+    try { comp.move(parent, { at: to }); } finally { state.muting = false; }
+    pushEvent(delta < 0 ? 'move-up' : 'move-down', comp, String(idx + 1), String(to + 1));
+    try { state.editor.select(comp); } catch (e) { /* 保住选中便于连续操作 */ }
+  }
+
+  // ---------- 弹窗系统（DOM API 构建，零 innerHTML 赋值） ----------
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function clearChildren(c) {
+    while (c.firstChild) c.removeChild(c.firstChild);
+  }
+  function showModal(title, buildBody, buttons) {
+    $('modal-title').textContent = title;
+    var body = $('modal-body');
+    clearChildren(body);
+    buildBody(body);
+    var foot = $('modal-foot');
+    clearChildren(foot);
+    buttons.forEach(function (b) {
+      var btn = el('button', 'btn' + (b.primary ? ' primary' : ''), b.label);
+      btn.addEventListener('click', b.onClick || closeModal);
+      foot.appendChild(btn);
+    });
+    $('modal').hidden = false;
+  }
+  function closeModal() {
+    $('modal').hidden = true;
+    clearChildren($('modal-body'));
+    clearChildren($('modal-foot'));
+    modalCtx = null;
+  }
+
+  function openTextModal(comp) {
+    var target = getTextTarget(comp);
+    var cur = target ? ((target.get && target.get('content')) || '') : '';
+    if (!target) { flash('未找到可修改的文字', true); return; }
+    modalCtx = { type: 'text', comp: comp, target: target };
+    showModal('修改文字', function (body) {
+      body.appendChild(el('p', 'm-hint', '直接输入新文字，确定后立即生效（可撤销）。'));
+      var ta = el('textarea');
+      ta.id = 'm-text';
+      ta.rows = 4;
+      ta.value = cur;
+      body.appendChild(ta);
+    }, [
+      { label: '取消' },
+      { label: '确定', primary: true, onClick: function () {
+          var v = $('m-text').value;
+          if (v !== cur) {
+            var host = modalCtx.comp;
+            modalCtx.target.set('content', v); // 事件由 content 钩子记录
+            // Text 节点无 innerHTML，模型到视图不会自动同步；走内核 rerender 通道强制重渲染
+            if (host && host.view) {
+              if (typeof host.view.reset === 'function') host.view.reset();
+              else if (typeof host.view.render === 'function') host.view.render();
+            }
+          }
+          closeModal();
+        } }
+    ]);
+    var ta = $('m-text');
+    ta.focus();
+    ta.selectionStart = ta.value.length;
+  }
+
+  function openImageModal(imgComp) {
+    var cur = imgComp.getAttributes ? (imgComp.getAttributes().src || '') : '';
+    modalCtx = { type: 'image', comp: imgComp, dataUrl: '' };
+    var pvEl = el('div');
+    pvEl.id = 'm-imgpreview';
+    showModal('更换图片', function (body) {
+      body.appendChild(el('p', 'm-hint',
+        '本地图片会自动内嵌进原型（保持单文件，不超过 2MB）；也可以直接粘贴图片网址。'));
+      var row = el('div', 'm-row');
+      var lbl = el('label', 'btn', '选择本地图片');
+      lbl.htmlFor = 'm-imgfile';
+      var fi = el('input');
+      fi.type = 'file';
+      fi.id = 'm-imgfile';
+      fi.accept = 'image/*';
+      var name = el('span', 'm-file-name');
+      name.id = 'm-imgname';
+      row.appendChild(lbl);
+      row.appendChild(fi);
+      row.appendChild(name);
+      body.appendChild(row);
+      body.appendChild(pvEl);
+      var url = el('input');
+      url.type = 'text';
+      url.id = 'm-imgurl';
+      url.placeholder = '或粘贴图片网址（建议用 data: 开头的内嵌地址）';
+      if (cur && !/^data:/.test(cur)) url.value = cur;
+      body.appendChild(url);
+      fi.addEventListener('change', function (e) {
+        var f = e.target.files && e.target.files[0];
+        if (!f) return;
+        if (f.size > MAX_IMAGE_BYTES) { flash('图片超过 2MB，请压缩后再试', true); return; }
+        var rd = new FileReader();
+        rd.onload = function () {
+          modalCtx.dataUrl = String(rd.result || '');
+          name.textContent = f.name + '（已就绪）';
+          clearChildren(pvEl);
+          var img = el('img', 'm-preview');
+          img.alt = '新图片预览';
+          img.src = modalCtx.dataUrl;
+          pvEl.appendChild(img);
+        };
+        rd.onerror = function () { flash('图片读取失败，请换一张试试', true); };
+        rd.readAsDataURL(f);
+      });
+    }, [
+      { label: '取消' },
+      { label: '确定', primary: true, onClick: function () {
+          var val = modalCtx.dataUrl || $('m-imgurl').value.trim();
+          if (!val) { flash('请先选择本地图片或粘贴图片网址', true); return; }
+          var old = imgComp.getAttributes ? (imgComp.getAttributes().src || '') : '';
+          imgComp.set('src', val); // 模型变更，进撤销栈
+          pushEvent('replace-image', imgComp, trunc(old, 120), trunc(val, 120), null,
+            modalCtx.dataUrl ? '换成本地图片（已内嵌）' : '换成图片网址');
+          closeModal();
+        } }
+    ]);
+  }
+
+  function openResetModal() {
+    showModal('确认重置？', function (body) {
+      body.appendChild(el('p', 'm-hint', '重置会丢弃当前全部修改（未导出的内容无法找回），回到打开文件界面。'));
+    }, [
+      { label: '取消' },
+      { label: '确认重置', primary: true, onClick: function () { closeModal(); doReset(); } }
+    ]);
+  }
+
+  function doReset() {
+    if (state.editor) { try { state.editor.destroy(); } catch (e) { /* 已销毁则忽略 */ } }
+    state.editor = null;
+    state.prototypeFile = '';
+    state.events = [];
+    state.seq = 0;
+    state.newSeq = 0;
+    state.recording = false;
+    state.pidLabels = {};
+    exportsMirror.html = null;
+    exportsMirror.json = null;
+    plainMirror = '';
+    setLoadedUI(false);
+    setStatus('未载入原型');
+  }
+
+  // ---------- token 操作（预设 / 色板 / 圆角 / 密度） ----------
+  function applyPreset(value) {
+    var prev = state.preset === 'keep' ? '跟随原型' : PRESET_LABEL[state.preset];
+    state.preset = value;
+    refreshTokenCss();
+    var cur = value === 'keep' ? '跟随原型' : PRESET_LABEL[value];
+    pushEvent('apply-preset', null, prev, cur, THEME_PID, '切换主题预设：' + prev + ' → ' + cur);
+  }
+  function applyColor(color, label) {
+    var prev = state.colorLabel || '默认';
+    state.color = color;
+    state.colorLabel = label;
+    refreshTokenCss();
+    pushEvent('apply-preset', null, prev, label + '（' + color + '）', THEME_PID,
+      '把主题色从「' + prev + '」换成「' + label + '（' + color + '）」');
+  }
+  function applyRadius(step) {
+    var prev = state.radius ? RADIUS_LABEL[state.radius] : '默认';
+    state.radius = step;
+    refreshTokenCss();
+    pushEvent('apply-preset', null, prev, RADIUS_LABEL[step], THEME_PID,
+      '把圆角档位调为「' + RADIUS_LABEL[step] + '」');
+  }
+  function applyDensity(step) {
+    var prev = state.density ? DENSITY_LABEL[state.density] : '默认';
+    state.density = step;
+    refreshTokenCss();
+    pushEvent('apply-preset', null, prev, DENSITY_LABEL[step], THEME_PID,
+      '把界面密度调为「' + DENSITY_LABEL[step] + '」');
+  }
+
+  // ---------- 撤销 / 重做 / 视口 ----------
+  function refreshUndoButtons() {
+    var um = state.editor && state.editor.UndoManager;
+    if (!um) return;
+    var u = false, r = false;
+    try { u = um.hasUndo(); r = um.hasRedo(); } catch (e) { /* 初始化早期可能不可用 */ }
+    $('btn-undo').disabled = !u;
+    $('btn-redo').disabled = !r;
+  }
+  function doUndo() {
+    var um = state.editor && state.editor.UndoManager;
+    if (!um || !um.hasUndo()) { flash('没有可撤销的操作', true); return; }
+    state.muting = true; // 撤销引发的组件级联不计入事件流
+    try { um.undo(); } finally { state.muting = false; }
+    pushEvent('nl-note', null, '', '', SYSTEM_PID, '用户撤销了一步操作');
+  }
+  function doRedo() {
+    var um = state.editor && state.editor.UndoManager;
+    if (!um || !um.hasRedo()) { flash('没有可重做的操作', true); return; }
+    state.muting = true;
+    try { um.redo(); } finally { state.muting = false; }
+    pushEvent('nl-note', null, '', '', SYSTEM_PID, '用户重做了一步操作');
+  }
+
+  // ---------- 导出（规格 §8 回传双通道） ----------
+  function stripWrapperBody(html) {
+    var m = /^<body[^>]*>([\s\S]*)<\/body>$/.exec(html.trim());
+    return m ? m[1] : html;
+  }
+  function buildFullHtml() {
+    var ed = state.editor;
+    var bodyHtml = stripWrapperBody(ed.getHtml());
+    // token CSS 原文在前（含 :root 组合结果），编辑器增量规则在后
+    var css = state.tokenCssFull + '\n' + ed.getCss();
+    var title = state.title.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n' +
+      '<meta charset="UTF-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+      '<title>' + title + '</title>\n' +
+      '<style>\n' + css + '\n</style>\n' +
+      '</head>\n<body>\n' + bodyHtml + '\n</body>\n</html>';
+  }
+  function buildEventsJson() {
+    return JSON.stringify({
+      schema_version: 1,
+      prototype_file: state.prototypeFile,
+      edits: state.events
+    }, null, 2);
+  }
+  function humanize(e) {
+    switch (e.action) {
+      case 'edit-text': return '修改文字：从「' + e.before + '」改为「' + e.after + '」';
+      case 'delete': return '删除了「' + labelOf(e.pid) + '」区块';
+      case 'move-up': return '把「' + labelOf(e.pid) + '」上移一位（第 ' + e.before + ' 位 → 第 ' + e.after + ' 位）';
+      case 'move-down': return '把「' + labelOf(e.pid) + '」下移一位（第 ' + e.before + ' 位 → 第 ' + e.after + ' 位）';
+      case 'replace-image': return '更换了「' + labelOf(e.pid) + '」的图片' + (e.note ? '（' + e.note + '）' : '');
+      case 'apply-preset': return e.note || ('应用主题预设：' + e.before + ' → ' + e.after);
+      case 'add': return '新增了「' + labelOf(e.pid) + '」区块';
+      case 'nl-note': return e.note || '';
+      default: return e.note || e.action;
+    }
+  }
+  function buildPlainText() {
+    var lines = state.events.map(function (e, i) { return (i + 1) + '. ' + humanize(e); });
+    var head = '原型修改说明（共 ' + state.events.length + ' 处修改）';
+    head += '\n原型文件：' + state.prototypeFile;
+    if (!lines.length) lines.push('（没有修改）');
+    return head + '\n' + lines.join('\n');
+  }
+  function download(name, content, mime) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+  }
+  function exportPackage() {
+    var html = buildFullHtml();
+    var json = buildEventsJson();
+    exportsMirror.html = html;
+    exportsMirror.json = json;
+    download('edited.html', html, 'text/html');
+    setTimeout(function () { download('edits.json', json, 'application/json'); }, 400);
+    flash('已导出 edited.html 和 edits.json，请把两个文件一起拖回项目对话');
+  }
+  function copyPlain() {
+    var txt = buildPlainText();
+    plainMirror = txt;
+    showModal('修改说明（复制后粘贴回项目对话）', function (body) {
+      var ta = el('textarea');
+      ta.id = 'm-plain';
+      ta.rows = 10;
+      ta.readOnly = true;
+      ta.value = txt;
+      body.appendChild(ta);
+    }, [
+      { label: '关闭' },
+      { label: '复制全部', primary: true, onClick: function () {
+          var done = function () { flash('修改说明已复制到剪贴板'); closeModal(); };
+          var ta = $('m-plain');
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(done).catch(function () {
+              ta.focus(); ta.select();
+              document.execCommand('copy') ? done() : flash('自动复制失败，请在文本框里手动复制', true);
+            });
+          } else {
+            ta.focus(); ta.select();
+            document.execCommand('copy') ? done() : flash('自动复制失败，请在文本框里手动复制', true);
+          }
+        } }
+    ]);
+    var ta = $('m-plain');
+    ta.focus();
+    ta.select();
+  }
+
+  // ---------- 文件载入（选择 + 拖拽双通道） ----------
+  function readFile(f) {
+    if (!/\.html?$/i.test(f.name)) { flash('请选择 HTML 原型文件（.html）', true); return; }
+    f.text().then(function (t) {
+      loadPrototype(t, f.name);
+    }).catch(function (err) {
+      flash('读取失败：' + err.message, true);
+    });
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    $('dropzone').classList.remove('dragging');
+    if (state.editor) return; // 已载入后不接受再拖文件
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) readFile(f);
+  }
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    $('dropzone').addEventListener(ev, function (e) {
+      e.preventDefault();
+      $('dropzone').classList.add('dragging');
+    });
+  });
+  $('dropzone').addEventListener('dragleave', function () {
+    $('dropzone').classList.remove('dragging');
+  });
+  $('dropzone').addEventListener('drop', handleDrop);
+  // 全局兜底：阻止浏览器把拖入文件当页面打开
+  window.addEventListener('dragover', function (e) { e.preventDefault(); });
+  window.addEventListener('drop', function (e) { e.preventDefault(); });
+
+  // ---------- 控件渲染与交互 ----------
+  (function renderControls() {
+    var sw = $('color-swatches');
+    COLOR_SWATCHES.forEach(function (s) {
+      var b = document.createElement('button');
+      b.className = 'swatch';
+      b.setAttribute('data-color', s.c);
+      b.setAttribute('title', s.n);
+      b.style.background = s.c;
+      b.disabled = true;
+      b.addEventListener('click', function () { applyColor(s.c, s.n); });
+      sw.appendChild(b);
+    });
+    function seg(container, items, attr, onPick) {
+      items.forEach(function (it) {
+        var b = document.createElement('button');
+        b.textContent = it.label;
+        b.setAttribute(attr, it.value);
+        b.disabled = true;
+        b.addEventListener('click', function () { onPick(it.value); });
+        container.appendChild(b);
+      });
+    }
+    seg($('seg-radius'), [
+      { value: 'small', label: '小' }, { value: 'medium', label: '中' }, { value: 'large', label: '大' }
+    ], 'data-value', applyRadius);
+    seg($('seg-density'), [
+      { value: 'cozy', label: '宽松' }, { value: 'compact', label: '紧凑' }
+    ], 'data-value', applyDensity);
+    seg($('seg-device'), [
+      { value: 'desktop', label: '桌面' }, { value: 'tablet', label: '平板' }, { value: 'mobile', label: '手机' }
+    ], 'data-device', function (id) {
+      if (!state.editor) return;
+      try { state.editor.setDevice(id); syncDeviceSeg(id); } catch (e) { flash('切换视口失败', true); }
+    });
+  })();
+
+  $('file-input').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (f) readFile(f);
+    e.target.value = '';
+  });
+  $('sel-preset').addEventListener('change', function (e) { applyPreset(e.target.value); });
+  $('btn-undo').addEventListener('click', doUndo);
+  $('btn-redo').addEventListener('click', doRedo);
+  $('btn-export').addEventListener('click', exportPackage);
+  $('btn-copy-plain').addEventListener('click', copyPlain);
+  $('btn-reset').addEventListener('click', openResetModal);
+  $('guide-hide').addEventListener('click', function () { $('guide').hidden = true; });
+
+  // ---------- 供自动化验证的只读镜像（window.__editorReady 供就绪探测） ----------
+  window.__api = {
+    get events() { return state.events; },
+    get exports() { return exportsMirror; },
+    get plainText() { return plainMirror; },
+    selectedInfo: function () {
+      var c = state.editor && state.editor.getSelected();
+      if (!c) return null;
+      return { pid: pidOf(c), tag: c.get('tagName'), toolbar: (c.get('toolbar') || []).map(function (b) { return b.attributes.title; }) };
+    },
+    canvasVar: function (name) {
+      var doc = canvasDoc();
+      if (!doc) return '';
+      return doc.defaultView.getComputedStyle(doc.documentElement).getPropertyValue(name).trim();
+    },
+    tokenCss: function () { return state.tokenCssFull; },
+    loadedFile: function () { return state.prototypeFile; }
+  };
+  window.__editorReady = true; // 脚本本体就绪（非画布就绪；画布就绪看 #btn-export 解禁）
+})();
+</script>
+</body>
+</html>

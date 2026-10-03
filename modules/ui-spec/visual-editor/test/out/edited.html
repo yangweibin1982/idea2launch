@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云舟协同 — 让团队数据一句话可达</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; }
+:root {
+  --brand-500: #047857;
+  --brand-600: #046a4d;
+  --brand-100: #dbeafe;
+  --accent-400: #f59e0b;
+  --gray-900: #111827;
+  --gray-600: #4b5563;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --surface: #ffffff;
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --space-2: 6px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 24px;
+  --space-12: 36px;
+  --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-heading: var(--font-sans);
+  --gray-50: #f9fafb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-950: #030712;
+  --space-1: 4px;
+  --space-3: 8px;
+  --space-16: 48px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --text-4xl: 36px;
+  --radius-sm: 6px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --shadow-1: 0 1px 2px rgba(17, 24, 39, 0.05);
+  --shadow-2: 0 4px 12px rgba(17, 24, 39, 0.08);
+  --shadow-3: 0 12px 32px rgba(17, 24, 39, 0.14);
+  --bg-canvas: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: var(--gray-50);
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-disabled: var(--gray-400);
+  --border-subtle: var(--gray-200);
+  --border-strong: var(--gray-400);
+  --primary: #047857;
+  --primary-hover: #046a4d;
+  --primary-active: #035b42;
+  --primary-fg: #ffffff;
+  --success-bg: #f0fdf4;
+  --success-fg: #15803d;
+  --success-border: #bbf7d0;
+  --warning-bg: #fffbeb;
+  --warning-fg: #b45309;
+  --warning-border: #fde68a;
+  --danger-bg: #fef2f2;
+  --danger-fg: #b91c1c;
+  --danger-border: #fecaca;
+  --info-bg: #eff6ff;
+  --info-fg: #1d4ed8;
+  --info-border: #bfdbfe;
+  --accent-bg: #eff6ff;
+  --accent-fg: #1d4ed8;
+  --accent-border: #bfdbfe;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-drawer: 1040;
+  --z-modal: 1060;
+  --z-toast: 1080;
+  --z-tooltip: 1100;
+}
+
+/* ===== Token 层：全部设计变量集中在 :root（V1 Spike 用例原型） ===== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: var(--gray-900);
+  background: var(--surface);
+  line-height: 1.6;
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+
+/* ===== 顶部导航 ===== */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-8);
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--surface);
+}
+.brand-mark {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brand-500);
+}
+.main-nav {
+  display: flex;
+  gap: var(--space-6);
+}
+.main-nav a {
+  color: var(--gray-600);
+  font-size: 15px;
+  padding: var(--space-2) 0;
+}
+.main-nav a:hover { color: var(--brand-500); }
+
+/* ===== Hero 区 ===== */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-8);
+  background: var(--gray-100);
+}
+.hero-copy { max-width: 520px; }
+.hero-title {
+  font-size: 40px;
+  line-height: 1.25;
+  color: var(--gray-900);
+  margin-bottom: var(--space-4);
+}
+.hero-sub {
+  font-size: 17px;
+  color: var(--gray-600);
+  margin-bottom: var(--space-6);
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--brand-500);
+  color: var(--surface);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+}
+.btn-primary:hover { background: var(--brand-600); }
+.hero-art {
+  width: 320px;
+  height: 220px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* ===== 三卡片区 ===== */
+.features {
+  padding: var(--space-12) var(--space-8);
+}
+.features-title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: var(--space-8);
+  color: var(--gray-900);
+}
+.card-grid {
+  display: flex;
+  gap: var(--space-6);
+  justify-content: center;
+}
+.card {
+  flex: 1;
+  max-width: 300px;
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--brand-100);
+  padding: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.card-title {
+  font-size: 18px;
+  margin-bottom: var(--space-2);
+  color: var(--gray-900);
+}
+.card-text {
+  font-size: 14px;
+  color: var(--gray-600);
+}
+
+/* ===== 页脚 ===== */
+.site-footer {
+  padding: var(--space-6) var(--space-8);
+  background: var(--gray-900);
+  color: var(--gray-200);
+  text-align: center;
+  font-size: 14px;
+}
+.site-footer a { color: var(--accent-400); }
+
+/* ===== 响应式 ===== */
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-8) var(--space-4);
+  }
+  .hero-title { font-size: 28px; }
+  .hero-art { width: 100%; height: auto; }
+  .card-grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .card { max-width: none; }
+  .features { padding: var(--space-8) var(--space-4); }
+}
+
+
+</style>
+</head>
+<body>
+<header data-pid="home-nav-01" class="site-header"><div class="brand-mark">云舟协同</div><nav class="main-nav"><a href="#features">产品能力</a><a href="#pricing">解决方案</a><a href="#about">客户案例</a><a href="#docs">帮助文档</a></nav></header><main><section data-pid="home-hero-01" class="hero"><div class="hero-copy"><h1 class="hero-title">新标题：让团队数据一句话可达</h1><p class="hero-sub">云舟协同把散落在表格、文档与系统里的业务数据接进来，用自然语言提问，三秒出答案。</p><a href="#start" class="btn-primary">免费开始使用</a></div><img alt="数据看板示意图" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" class="hero-art"/></section><section data-pid="home-cards-01" class="features"><h2 class="features-title">三个能力，覆盖数据协作全流程</h2><div class="card-grid"><article data-pid="home-cards-02" class="card"><img alt="接入图标" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M6 22 L14 12 L20 18 L26 8' stroke='%232563eb' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" class="card-icon"/><h3 class="card-title">一键接入</h3><p class="card-text">预置 40 多种常见业务系统连接器，五分钟完成数据接入，无需编写代码。</p></article><article data-pid="home-cards-04" class="card"><img alt="协作图标" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='11' cy='12' r='5' fill='%232563eb'/%3E%3Ccircle cx='22' cy='18' r='4' fill='%23f59e0b'/%3E%3Cpath d='M4 27 C4 21 8 19 11 19 C14 19 18 21 18 27 Z' fill='%232563eb'/%3E%3C/svg%3E" class="card-icon"/><h3 class="card-title">看板协作</h3><p class="card-text">查询结果一键生成看板，支持评论与订阅推送，团队洞察实时同步。</p></article></div></section></main><footer data-pid="home-footer-01" class="site-footer"><p>© 2026 云舟科技 · <a href="#terms">服务条款</a> · <a href="#privacy">隐私政策</a></p></footer>
+</body>
+</html>

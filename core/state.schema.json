@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "state.schema.json",
+  "title": "idea2launch 状态机（state.json）",
+  "description": "idea2launch 九阶段向导的唯一事实源。落在用户项目根 idea2launch/state.json。写路径唯一：只经闸门（L1）/关键决策（L2）确认后发生。版本化向后兼容（接缝 S4）：允许附加字段，升级不破坏旧项目续跑。",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "project",
+    "current_stage",
+    "gates",
+    "l2_decisions",
+    "open_gaps",
+    "agent_mode",
+    "inject_global"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "schema 版本常量。本 schema 为 v1；后续升级只增不破，读入方对未知字段必须忽略而非报错（接缝 S4）。"
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["name", "created", "tier"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "用户项目名（大白话即可，非技术用户起的名）。"
+        },
+        "created": {
+          "type": "string",
+          "description": "项目创建时间，ISO 8601（建议 YYYY-MM-DD 或完整时间戳）。"
+        },
+        "tier": {
+          "enum": ["draft", "production"],
+          "description": "双档：draft=草图档（砍辩论/评审，自动采用推荐项留痕）；production=生产档（全流程）。见 G1 决策 16。"
+        }
+      }
+    },
+    "current_stage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9,
+      "description": "当前所处阶段号（1 立项评估 … 9 轻运营）。跨会话续跑据此恢复。"
+    },
+    "gates": {
+      "type": "array",
+      "description": "L1 阶段闸门记录，按发生顺序追加。gate 命名规约由状态机实现票（T8）定稿；规格草案示例为 \"G0-charter\"。",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["gate", "status"],
+        "properties": {
+          "gate": {
+            "type": "string",
+            "description": "闸门标识，如 G0-charter（立项评估闸门）。",
+            "examples": ["G0-charter"]
+          },
+          "status": {
+            "enum": ["signed", "returned", "skipped"],
+            "description": "signed=已签字通过；returned=被退回修改；skipped=跳过（仅限无强制闸门的阶段）。"
+          },
+          "at": {
+            "type": "string",
+            "description": "签字/退回发生时间，ISO 8601。"
+          },
+          "note": {
+            "type": "string",
+            "description": "签字时用户备注或退回原因（大白话）。"
+          }
+        }
+      }
+    },
+    "l2_decisions": {
+      "type": "array",
+      "description": "L2 关键决策记录（UI 方向拍板 / 技术栈定稿 / 开发票批准）。决策详情同时落 decisions.log（T8 交付）。",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["id", "chosen"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "决策标识（如 ui-direction / tech-stack / tickets-approval）。"
+          },
+          "chosen": {
+            "type": "string",
+            "description": "用户拍板的选择（或草图档自动采用的推荐项）。"
+          },
+          "auto": {
+            "type": "boolean",
+            "description": "true=草图档自动采用推荐项并留痕（G1 决策 16）；false=用户亲自拍板。"
+          },
+          "at": {
+            "type": "string",
+            "description": "决策时间，ISO 8601。"
+          }
+        }
+      }
+    },
+    "open_gaps": {
+      "type": "array",
+      "description": "未决缺口登记（已知但暂不处理的事项，跨会话不丢）。元素结构 M2 缺口裁决工作台完整版定稿，v1 不锁定。"
+    },
+    "agent_mode": {
+      "enum": ["single", "multi"],
+      "description": "运行时能力探测结果：multi=宿主有子代理机制（多代理并行＋辩论增强，生产档）；single=无或探测失败静默降级（降级须留痕）。见 G1 决策 9。"
+    },
+    "inject_global": {
+      "enum": ["ask", "on", "off"],
+      "description": "宿主全局规则注入开关，默认 ask（首次运行询问用户）。零侵入为默认。见 G1 决策 10。"
+    }
+  }
+}

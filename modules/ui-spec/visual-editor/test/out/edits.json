@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "prototype_file": "fixture-prototype.html",
+  "edits": [
+    {
+      "seq": 1,
+      "ts": "2026-10-03T05:28:18.289Z",
+      "pid": "home-hero-01",
+      "action": "edit-text",
+      "before": "让团队数据一句话可达",
+      "after": "新标题：让团队数据一句话可达",
+      "note": ""
+    },
+    {
+      "seq": 2,
+      "ts": "2026-10-03T05:28:26.170Z",
+      "pid": "home-cards-03",
+      "action": "move-up",
+      "before": "2",
+      "after": "1",
+      "note": ""
+    },
+    {
+      "seq": 3,
+      "ts": "2026-10-03T05:28:32.663Z",
+      "pid": "home-cards-03",
+      "action": "delete",
+      "before": "自然语言查询用日常中文直接提问，引擎自动翻译成查询并生成图表，业务同学零门槛。",
+      "after": "",
+      "note": ""
+    },
+    {
+      "seq": 4,
+      "ts": "2026-10-03T05:28:33.001Z",
+      "pid": "__global__",
+      "action": "nl-note",
+      "before": "",
+      "after": "",
+      "note": "用户撤销了一步操作"
+    },
+    {
+      "seq": 5,
+      "ts": "2026-10-03T05:28:33.328Z",
+      "pid": "__global__",
+      "action": "nl-note",
+      "before": "",
+      "after": "",
+      "note": "用户重做了一步操作"
+    },
+    {
+      "seq": 6,
+      "ts": "2026-10-03T05:28:34.700Z",
+      "pid": "home-hero-01",
+      "action": "replace-image",
+      "before": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 220'%3E%3Crect width='320' height='220' rx…",
+      "after": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciLz4=",
+      "note": "换成图片网址"
+    },
+    {
+      "seq": 7,
+      "ts": "2026-10-03T05:28:41.270Z",
+      "pid": "home-hero-01",
+      "action": "replace-image",
+      "before": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciLz4=",
+      "after": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "note": "换成本地图片（已内嵌）"
+    },
+    {
+      "seq": 8,
+      "ts": "2026-10-03T05:28:47.384Z",
+      "pid": "__theme__",
+      "action": "apply-preset",
+      "before": "跟随原型",
+      "after": "温暖内容风",
+      "note": "切换主题预设：跟随原型 → 温暖内容风"
+    },
+    {
+      "seq": 9,
+      "ts": "2026-10-03T05:28:47.573Z",
+      "pid": "__theme__",
+      "action": "apply-preset",
+      "before": "温暖内容风",
+      "after": "清爽工具风",
+      "note": "切换主题预设：温暖内容风 → 清爽工具风"
+    },
+    {
+      "seq": 10,
+      "ts": "2026-10-03T05:28:47.780Z",
+      "pid": "__theme__",
+      "action": "apply-preset",
+      "before": "默认",
+      "after": "大圆角",
+      "note": "把圆角档位调为「大圆角」"
+    },
+    {
+      "seq": 11,
+      "ts": "2026-10-03T05:28:47.994Z",
+      "pid": "__theme__",
+      "action": "apply-preset",
+      "before": "默认",
+      "after": "紧凑",
+      "note": "把界面密度调为「紧凑」"
+    },
+    {
+      "seq": 12,
+      "ts": "2026-10-03T05:28:48.208Z",
+      "pid": "__theme__",
+      "action": "apply-preset",
+      "before": "默认",
+      "after": "翠绿（#047857）",
+      "note": "把主题色从「默认」换成「翠绿（#047857）」"
+    }
+  ]
+}

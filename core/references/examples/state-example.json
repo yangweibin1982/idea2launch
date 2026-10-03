@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "project": {
+    "name": "社区宠物寄养互帮平台",
+    "created": "2026-10-02",
+    "tier": "draft"
+  },
+  "current_stage": 3,
+  "gates": [
+    {
+      "gate": "G1-charter",
+      "status": "signed",
+      "at": "2026-10-02T10:40:00+08:00",
+      "note": "用户看完评估报告选择继续；建档时已选草图档"
+    },
+    {
+      "gate": "G2-requirements",
+      "status": "returned",
+      "at": "2026-10-02T14:05:00+08:00",
+      "note": "用户：缺「寄养期间宠物生病谁负责」的说明，补上再签"
+    },
+    {
+      "gate": "G2-requirements",
+      "status": "signed",
+      "at": "2026-10-02T15:20:00+08:00",
+      "note": "补充责任与应急安排后签字通过"
+    }
+  ],
+  "l2_decisions": [
+    {
+      "id": "ui-direction",
+      "chosen": "卡片流＋大按钮的温暖插画风（推荐项 2）",
+      "auto": true,
+      "at": "2026-10-03T09:30:00+08:00",
+      "rationale": "草图档自动采用：目标用户是社区宠物主人，插画卡片流比密集表格更亲切、非技术用户上手快"
+    }
+  ],
+  "open_gaps": [
+    {
+      "id": "gap-001",
+      "desc": "用户提到以后可能想要手机 App，本轮先做电脑和手机都能打开的网页",
+      "stage": 3,
+      "at": "2026-10-03T09:35:00+08:00",
+      "status": "open"
+    }
+  ],
+  "agent_mode": "single",
+  "inject_global": "off"
+}

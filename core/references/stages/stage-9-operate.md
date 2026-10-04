@@ -34,11 +34,12 @@
 2. **新功能路**（加功能/方向变化）：回 [stage-2-requirements.md](stage-2-requirements.md) 增量走（新增用户故事 → 受影响阶段依次重走）；PRD 不做清单与 `open_gaps` 里的「以后再说」条目是天然候补池（[../state-protocol.md](../state-protocol.md) §5）——逐条列出让用户挑，禁智能体自行挑单开工（C3）。
 3. **触发确认规则**：任何迭代改动必须用户发起或确认——检测到「继续做/加功能/顺手改一下」类意图，只提示可做动作与后果，不擅自动工（[../triggers.md](../triggers.md) L3；角色卡禁止事项 2）。已交付代码的任何改动都算迭代，禁静默修（角色卡禁止事项 1）。
 4. 成本差异一句话（C5）：小改动大约 1-2 轮会话；新功能从阶段 2 起步，消耗与功能体量成正比——均估计非承诺。写进 `反馈.md` 末尾。
+5. **迭代盘点**（`open_gaps` 批量裁决；裁决＝对记下的每件未决事给个说法，细则见 [../gap-workbench.md](../gap-workbench.md)）：用户想启动下一轮迭代（或说「处理一下之前记的事」）→ 读 `state.json` 的 `open_gaps` 全部 `open` 条目，按 [../gap-workbench.md](../gap-workbench.md) 裁决页逐条走四选项（现在就办／登记到下一期／知情带过／撤销，一次一缺口、禁默认选中）；裁决为「登记到下一期」的条目构成**迭代清单**。用户正式启动下一轮迭代时，迭代清单作为阶段 2 增量需求的正式输入——回 [stage-2-requirements.md](stage-2-requirements.md) 增量流程（对齐 [../triggers.md](../triggers.md) L3「加功能类」），逐条让用户挑、禁自行挑单开工（C3）。落盘走 [../gap-workbench.md](../gap-workbench.md) §4 两条写路径：本阶段无强制闸门，批量裁决默认走 W2「用户拍板」路径（先 log 后 state，七步写入法）；恰逢第③步 G9 收尾写回时也可随该闸门事件同笔联动（W1）。
 
 ### 第③步 收尾与完结留痕（G9 无强制闸门）
 
 1. 向用户交代项目完整状态（与 `state.json` 逐项对账，C1）：九阶段走完；闸门史一览翻译成大白话（「你的需求文档、设计、技术方案、开发计划都已确认，每个里程碑验收过、你本人验收过、交付签收过」）；文档在哪（`idea2launch/` 目录导览）；想改找谁（第②步两条路）。播报用语按 [../state-protocol.md](../state-protocol.md) §2.3（「进入轻运营」）。
-2. `open_gaps` 逐条问用户「现在处理还是先放着」：处理的按 §2 路由走；先放着的保持 `open`；明确放弃的关闭（`status=closed`＋`note`，[../state-protocol.md](../state-protocol.md) §5）。
+2. `open_gaps` 逐条问用户「现在处理还是先放着」：处理的走 [../gap-workbench.md](../gap-workbench.md) 裁决页四选项（含按 §2 路由的「现在就办」与转下一期的「登记到下一期」，见第②步 5）；先放着的保持 `open`；明确放弃／当时记错的按裁决关闭（`status=closed`＋`note`，[../state-protocol.md](../state-protocol.md) §5；落盘见 [../gap-workbench.md](../gap-workbench.md) §4）。
 3. 收尾写回（经用户确认，七步写入法）：gates 追加 `G9-operate` `skipped`（`note` 记完结状态一句话）；用户不想留记录则不写——两种都合法（[../state-protocol.md](../state-protocol.md) §2.3 G9 行）。
 4. 本阶段之后流程不再自动推进：用户带反馈回来时按 §2 路由；重入先读 state.json、反馈入口已建不重建（角色卡 C7）。
 
@@ -59,8 +60,9 @@
 | 3 | 迭代入口两条路在盘 | `grep -c "阶段 2\|增量票" idea2launch/9-operate/反馈.md` | ≥2——两条路＋触发确认规则都写明 |
 | 4 | G9 写回合规 | gates 中若有 `G9-operate` 条目：status ＝ `skipped` 且 `note` 非空 | 出现 `signed` ＝违规（本阶段无签字语义）；无条目亦合法 |
 | 5 | 完结交代与盘一致 | 会话播报对照 state.json gates 史逐项核对 | 无夸大完成度（C1） |
+| 6 | 迭代盘点裁决合规（若发生） | `grep -cE "\"id\": ?\"gap-" idea2launch/decisions.log`（裁决发生的轮次 ≥1）；gap 行数与本次置 `closed` 的条目数对照 state.json 核对；`grep -cE "\"auto\": ?true" idea2launch/decisions.log` ≤3（auto:true 仅限草图档三个固定 L2，缺口裁决行恒 false） | gap 行数＝closed 条目数；gap 行无 auto:true |
 
-- 判据 1–3、5 在收尾交代前全绿；判据 4 随第③步发生。「完成」的口径＝收尾交代完毕＋G9 写回合规（`skipped` 或无条目）。
+- 判据 1–3、5 在收尾交代前全绿；判据 4 随第③步发生；判据 6 仅在发生了迭代盘点裁决时检查——未裁决即无 gap 行，亦合规。「完成」的口径＝收尾交代完毕＋G9 写回合规（`skipped` 或无条目）。
 
 ## 4. 与其他协议的衔接
 
@@ -68,5 +70,6 @@
 - 状态读写：G9 行（`skipped` 语义，无强制闸门）与 open_gaps §5 见 [../state-protocol.md](../state-protocol.md)；七步写入法 §2.2。
 - 触发：迭代意图只提示不自动动工——[../triggers.md](../triggers.md) L3；确认页：[../confirmation-pages.md](../confirmation-pages.md)（收尾确认与手册补改确认）。
 - 模板：[../templates/feedback-page.md](../templates/feedback-page.md)（反馈页唯一出处——零外部依赖约束见其文首注记）。
+- 缺口裁决：缺口分类、裁决页四选项与两条写入路径见 [../gap-workbench.md](../gap-workbench.md)；第②步 5 的迭代盘点即其裁决时机 3（批量裁），迭代清单是阶段 2 增量的正式输入。
 - 回环：小改动路→[stage-5-plan.md](stage-5-plan.md)；新功能路→[stage-2-requirements.md](stage-2-requirements.md)；改动涉代码时重新装载 [stage-6-build.md](stage-6-build.md) 与工程规范包——九阶段状态机自此闭环。
 - 中断续跑：重入先读 state.json 确认项目状态；反馈入口已建不重建，从断点续（角色卡 C7）。

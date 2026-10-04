@@ -155,12 +155,14 @@ L2 关键决策共三处（v1 固定）：
 | 字段 | 说明 |
 |---|---|
 | `ts` | 决策时间，ISO 8601 |
-| `id` | 同 §2.4 的 l2_decisions.id（三个固定值之一） |
+| `id` | 同 §2.4 的 l2_decisions.id（三个固定值之一），或 `gap-`＋三位序号（缺口裁决行，如 `gap-001`，见 [gap-workbench.md](gap-workbench.md)） |
 | `question` | 决策问题原文（大白话） |
 | `chosen` | 拍板结果 |
 | `alternatives` | 落选候选（字符串数组；无则 `[]`） |
 | `auto` | `true`=草图档自动采用；`false`=用户拍板 |
 | `rationale` | `auto=true` 必填推荐理由；用户拍板可记附言，无则 `""` |
+
+> 缺口裁决行（`id` 为 `gap-*`）同格式、同七字段：`question`＝缺口 `desc`、`auto` 恒 `false`，各字段取值细则见 [gap-workbench.md](gap-workbench.md) §4。
 
 ### 4.2 append-only
 
@@ -175,7 +177,7 @@ L2 关键决策共三处（v1 固定）：
 
 ## 5. open_gaps 规约（v1 约定）
 
-> schema 对该数组元素结构 v1 不锁定；下表为 v1 协议约定，后续版本的缺口裁决工作台在此结构上扩展。
+> schema 对该数组元素结构 v1 不锁定；下表为 v1 协议约定，在此基础上扩展的缺口裁决工作台（缺口分类、裁决流程、裁决写入路径）见 [gap-workbench.md](gap-workbench.md)。
 
 **什么进缺口清单**：
 
@@ -191,6 +193,7 @@ L2 关键决策共三处（v1 固定）：
 |---|---|
 | `id` | `gap-`＋三位序号（如 `gap-001`），项目内递增、不复用 |
 | `desc` | 大白话描述（当时怎么记的，以后就怎么读） |
+| `kind` | 分类标记：`feature`（功能缺口）／`decision`（决策待定）／`clarify`（澄清待答）／`accepted`（知情带过），定义见 [gap-workbench.md](gap-workbench.md) §1；缺省视为 `clarify`（向后兼容：旧项目条目无此字段按 `clarify` 读，不补写、不报错） |
 | `stage` | 发现时所处阶段号（1-9） |
 | `at` | 登记时间，ISO 8601 |
 | `status` | `open` ／ `closed` |
@@ -200,9 +203,12 @@ L2 关键决策共三处（v1 固定）：
 
 **写入时机**：登记与关闭均不单独触发写盘——随闸门事件（§2.1 W1）同笔联动落盘（如随 G2 签字把拷问中答「以后再说」的缺口登记落盘，随某闸门签字把已拍板的缺口关闭），「写路径唯一」不因此改变。
 
+**裁决关闭的写入路径**（缺口裁决工作台，见 [gap-workbench.md](gap-workbench.md)）：用户对 `open` 条目拍板裁决（现在就办／登记到下一期／知情带过／撤销）→ 先追加 decisions.log 一行（`id` 用 `gap-`＋三位序号，§4.1），再把该条目置 `closed`＋`note`——同笔落盘，仍走七步写入法（§2.2）。路径按裁决时机二选一：随闸门裁决走 **W1 联动**（闸门事件同一笔落盘，同上）；非闸门时刻裁决走 **W2「用户拍板」决策路径**（先 log 后 state；只动 decisions.log 与 open_gaps，不追加 l2_decisions——l2_decisions 仅限 §2.4 三个固定 L2）。不设新写事件，§2.1 白名单不变。
+
 ## 6. 与 schema 及其他协议的衔接
 
 - **字段一致性**：本文所有字段与 `core/state.schema.json`（v1）严格一致。两处经 schema 附加字段通道（`additionalProperties: true`，向后兼容约定）的扩展：`project.status`（§2.3 G1 放弃分支，取值 `active`／`abandoned`，缺省视为 `active`）与 l2_decisions 条目的 `rationale`；未来版本可将其转正为正式字段。
 - **装载衔接**：本读协议是主工序「上下文装载协议」（[SKILL.md](../SKILL.md) §2）第 1 步的实施细则；第 2 步起的细则装载按 SKILL.md 指针执行。
 - **触发衔接**：技能何时被触发、能力探测怎么做，见 `references/triggers.md`。
 - **确认页衔接**：签字／拍板的页面呈现规范（会话提问或 HTML 确认页），见 `references/confirmation-pages.md`。
+- **缺口裁决衔接**：open_gaps 的缺口分类（`kind`）、裁决页面（四选项）与裁决写入路径，见 `references/gap-workbench.md`。

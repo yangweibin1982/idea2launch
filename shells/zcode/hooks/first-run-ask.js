@@ -62,6 +62,14 @@ function seg(parts) {
 // still confined to <root>/idea2launch/<constant-name>. `guarded()` enforces
 // the root boundary check (target.startsWith(root + sep)) on every join, so
 // even a hostile root/rel can never escape the project subtree.
+//
+// Semgrep note (2026-10-04, offline snapshot audit): the local rules snapshot
+// flags every dynamic path below (detect-non-literal-fs-filename /
+// path-join-resolve-traversal). Dynamic paths are this CLI's purpose
+// (user-supplied project root); every flagged call sits behind guarded()
+// (root-boundary throw) and/or resolveRoot() (normalize + must-be-dir).
+// Accepted finding -> inline nosemgrep with this justification; re-review
+// whenever the guard itself changes.
 function guarded(root, ...rel) {
   const target = seg([root, ...rel]);
   const base = root.endsWith(path.sep) ? root : root + path.sep;
@@ -74,49 +82,49 @@ function guarded(root, ...rel) {
 function resolveRoot(raw) {
   // Normalize the user-supplied root (resolves .. / relative segments) and
   // require it to be an existing directory — anything else is a usage error.
-  const root = path.normalize(path.isAbsolute(raw) ? raw : path.join(process.cwd(), raw));
+  const root = path.normalize(path.isAbsolute(raw) ? raw : path.join(process.cwd(), raw)); // nosemgrep:javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
   let st;
-  try { st = fs.statSync(root); } catch (_) { st = null; }
+  try { st = fs.statSync(root); } catch (_) { st = null; } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   if (!st || !st.isDirectory()) return null;
   return root;
 }
 
 function readMarker(root) {
-  try { return fs.readFileSync(guarded(root, ...MARKER_REL), 'utf8').trim(); }
+  try { return fs.readFileSync(guarded(root, ...MARKER_REL), 'utf8').trim(); } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   catch (_) { return ''; }
 }
 
 function writeMarker(root, answer) {
   const dir = guarded(root, 'idea2launch');
-  fs.mkdirSync(dir, { recursive: true });
+  fs.mkdirSync(dir, { recursive: true }); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   const target = guarded(root, ...MARKER_REL);
   const tmp = target + '.tmp';
-  fs.writeFileSync(tmp, answer + '\n', 'utf8');
+  fs.writeFileSync(tmp, answer + '\n', 'utf8'); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   // Read-back self-check, then atomic rename (state-protocol §2.2 miniature).
-  const back = fs.readFileSync(tmp, 'utf8').trim();
+  const back = fs.readFileSync(tmp, 'utf8').trim(); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   if (back !== answer) {
-    fs.unlinkSync(tmp);
+    fs.unlinkSync(tmp); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
     throw new Error('marker self-check failed');
   }
-  fs.renameSync(tmp, target);
+  fs.renameSync(tmp, target); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
 }
 
 function mergeStateField(root, answer) {
   const statePath = guarded(root, ...STATE_REL);
   let raw;
-  try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return false; }
+  try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return false; } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   let obj;
   try { obj = JSON.parse(raw); } catch (_) { return false; } // corrupted state: not ours to fix here
   obj.inject_global = answer;
   const tmp = statePath + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(obj, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(tmp, JSON.stringify(obj, null, 2) + '\n', 'utf8'); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   try {
-    const back = JSON.parse(fs.readFileSync(tmp, 'utf8'));
+    const back = JSON.parse(fs.readFileSync(tmp, 'utf8')); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
     if (back.inject_global !== answer) throw new Error('self-check failed');
-    fs.renameSync(tmp, statePath);
+    fs.renameSync(tmp, statePath); // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
     return true;
   } catch (e) {
-    try { fs.unlinkSync(tmp); } catch (_) { /* best effort */ }
+    try { fs.unlinkSync(tmp); } catch (_) { /* best effort */ } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
     throw e;
   }
 }

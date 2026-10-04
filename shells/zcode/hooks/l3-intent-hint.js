@@ -102,8 +102,11 @@ function isSafeDir(p) {
 
 function readState(statePath) {
   // Returns { ok: true, stage, name } | { ok: true, unreadable: true } | { ok: false }.
+  // nosemgrep note (2026-10-04, offline snapshot audit): statePath is built in
+  // run() as isSafeDir(cwd) + fixed 'idea2launch/state.json' suffix; this hook
+  // is read-only and fail-silent. Accepted dynamic-path finding.
   let raw;
-  try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return { ok: false }; }
+  try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return { ok: false }; } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
   try {
     const s = JSON.parse(raw);
     const stage = typeof s.current_stage === 'number' ? s.current_stage : null;
@@ -136,7 +139,7 @@ function run(raw) {
   // fixed and reviewable (read-only existence/parse of a fixed suffix).
   const statePath = cwd + path.sep + 'idea2launch' + path.sep + 'state.json';
   let inProgress;
-  try { inProgress = fs.existsSync(statePath); } catch (_) { return { code: 0, stdout: '' }; }
+  try { inProgress = fs.existsSync(statePath); } catch (_) { return { code: 0, stdout: '' }; } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
 
   let hint;
   if (inProgress) {

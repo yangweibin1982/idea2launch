@@ -1,7 +1,7 @@
 # 阶段 5 · 开发计划（Plan）· 阶段细则 ○
 
 > 本文是九阶段中第 5 阶段（计划○简版）的执行细则。一句话：智能体换上「计划经理」角色（角色卡见 [../roles/role-5-plan.md](../roles/role-5-plan.md)），把已签字的技术方案拆成一叠用户看得懂的**开发票**（每票一件事＋可检查的完成标准），排出先后顺序与里程碑批次，登记可能卡住的风险，经**开发票批准**（L2）与 **G5-plan** 签字后进开发。
-> 互引分工：职责/输入/输出/禁止事项见角色卡；闸门写回与 L2 双写见 [../state-protocol.md](../state-protocol.md)（G5 行）；L1 四选项/L2 草图档行为见 [../triggers.md](../triggers.md)；确认页呈现见 [../confirmation-pages.md](../confirmation-pages.md)。本文只写「这一阶段按什么顺序做、怎么拆、怎么算做完」。
+> 互引分工：职责/输入/输出/禁止事项见角色卡；闸门写回与 L2 双写见 [../state-protocol.md](../state-protocol.md)（G5 行）；L1 五选项/L2 草图档行为见 [../triggers.md](../triggers.md)；确认页呈现见 [../confirmation-pages.md](../confirmation-pages.md)。本文只写「这一阶段按什么顺序做、怎么拆、怎么算做完」。
 > 纪律基线：[../disciplines/conduct.md](../disciplines/conduct.md)（C1–C7）。本阶段高频条款：C2 票标题大白话/清单 ≤1 屏、C3 拆票取舍属 L2 必经批准、C5 排期即成本预告、C7 已批准票不重拆。
 
 ## 0. 开场装载清单（顺序写死，不得跳过、不得凭记忆代替读盘）
@@ -55,7 +55,7 @@
 
 **B. L1 闸门 `G5-plan`（计划签字）**
 
-1. 按确认页规范呈现，顺序不可倒：大白话摘要 ≤3 句（做了什么——拆票 N 张、排 M 个里程碑、风险 K 条；产出在哪——`idea2launch/5-plan/` 三件；下一步是什么——阶段 6 按票开发）＋**后果声明先于选项**（签字＝票清单与排期定稿进开发，此后改票＝改已签字产出须重签（C6）；退回＝留在阶段 5 按意见修改）＋**默认四选项**：看细节／改了再签／签字／退回（语义见 [../triggers.md](../triggers.md) L1）。
+1. 按确认页规范呈现，顺序不可倒：大白话摘要 ≤3 句（做了什么——拆票 N 张、排 M 个里程碑、风险 K 条；产出在哪——`idea2launch/5-plan/` 三件；下一步是什么——阶段 6 按票开发）＋**后果声明先于选项**（签字＝票清单与排期定稿进开发，此后改票＝改已签字产出须重签（C6）；退回＝留在阶段 5 按意见修改）＋**默认五选项**：看细节／改了再签／签字／退回／回退上一闸门（语义见 [../triggers.md](../triggers.md) L1）。
 2. 写回（七步写入法，写路径唯一）：签字 → gates 追加 `G5-plan` `signed`、`current_stage=6`；退回 → 追加 `returned`（附原因）留阶段 5；回退上一闸门 → `G4-tech` 追加 `returned` 退回阶段 4。
 3. **两档一致**：草图档只自动 L2（上述 A.3），G5 闸门仍须用户真人签，禁代签（C4 矩阵第 5 行）。
 4. 连续两次退回 → 触 C3 红旗升级对齐，禁第三次硬交。
@@ -99,8 +99,8 @@
 
 - 角色卡：[../roles/role-5-plan.md](../roles/role-5-plan.md)——本文不重复其职责/禁止事项，冲突时以纪律包与角色卡为准。
 - 状态读写：L2 双写与七步写入法 [../state-protocol.md](../state-protocol.md) §2.2/§2.4/§4；G5 语义与播报用语（「开发计划已批准」）§2.3；中断对账 §4.3。
-- 触发与装载：[../triggers.md](../triggers.md)（本文 §0 即装载协议在阶段 5 的展开）；L1 四选项与 L2 草图档行为见其二。
-- 确认页：[../confirmation-pages.md](../confirmation-pages.md)——L2 实质选项与 L1 四选项的呈现结构。
+- 触发与装载：[../triggers.md](../triggers.md)（本文 §0 即装载协议在阶段 5 的展开）；L1 五选项与 L2 草图档行为见其二。
+- 确认页：[../confirmation-pages.md](../confirmation-pages.md)——L2 实质选项与 L1 五选项的呈现结构。
 - 上游输入：里程碑切分＝技术方案 §六（[../templates/tech-plan.md](../templates/tech-plan.md)）；US 编号规约 [../templates/user-stories.md](../templates/user-stories.md)（阶段 2 产出，见 [stage-2-requirements.md](stage-2-requirements.md) 第 4 步）；红旗判据唯一出处＝评估报告附录 A（[../templates/assessment-report.md](../templates/assessment-report.md)）。
 - 下游去向：票清单→阶段 6 逐票开发（[stage-6-build.md](stage-6-build.md)）；风险登记→阶段 6 失败恢复与阶段 7 缺陷评估参照；排期批次→G6-build 里程碑验收节奏。
 - 中断续跑：任一步中断 → 开场读 state.json＋检查 `idea2launch/5-plan/` 已有物；已批准票不重拆（角色卡 C7），未批准票续打磨；L2 双写中断按 [../state-protocol.md](../state-protocol.md) §4.3 对账补齐。

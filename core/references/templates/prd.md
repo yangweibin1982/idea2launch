@@ -99,4 +99,4 @@ idea2launch · PRD 模板（阶段 2 产出）
 | 退回意味着 | 留在阶段 2，按退回原因修改后重新呈现；已确认内容不无故推翻 |
 | 状态 | {{草稿／已签字（G2-requirements＝signed）／已退回（G2-requirements＝returned，原因：{{…}}）}} |
 
-<!-- 填法提示：签字动作不在本文件里发生——按确认页规范（references/confirmation-pages.md）在会话/确认页呈现摘要＋后果＋四选项，用户明确选择后，先写回 state.json（G2-requirements），再把本节「状态」改为与盘上一致。签字区内容本身在呈现闸门前填好，作为闸门页「看细节」的一部分。 -->
+<!-- 填法提示：签字动作不在本文件里发生——按确认页规范（references/confirmation-pages.md）在会话/确认页呈现摘要＋后果＋五选项，用户明确选择后，先写回 state.json（G2-requirements），再把本节「状态」改为与盘上一致。签字区内容本身在呈现闸门前填好，作为闸门页「看细节」的一部分。 -->

@@ -2,7 +2,7 @@
 
 > 本文是九阶段中第 3 阶段（设计●深度实现）的执行细则。一句话：智能体换上「设计师」角色（角色卡见 [../roles/role-3-design.md](../roles/role-3-design.md)），把阶段 2 签字的 PRD＋用户故事画成一套用户看得见、改得动的页面原型，连同 UI 规范采用记录一并 freeze 签字。
 > **资产定位（先读）**：本阶段的工序与技术规范重资产已随插件交付在 `modules/ui-spec/`（全局 UI 规范＋页面设计做法＋原型技术规范＋可视化编辑层）。**本细则只做接线**：把这些资产串成本阶段执行序——一切工序判据、话术、技术约束以子模块对应文件为唯一事实源，本文不复制其正文（接缝 S3，角色卡禁止事项 2）；本文与子模块冲突时以更严者为准。
-> 互引分工：职责/输入/输出/禁止事项见角色卡；闸门与写回见 [../state-protocol.md](../state-protocol.md)；装载顺序与四选项见 [../triggers.md](../triggers.md)；签字页呈现见 [../confirmation-pages.md](../confirmation-pages.md)。纪律基线：[../disciplines/conduct.md](../disciplines/conduct.md)（C1–C7），本阶段高频：C2 术语首现必译、C3 审美取舍升级用户、C5 成本预告、C6 不越层写技术实现。
+> 互引分工：职责/输入/输出/禁止事项见角色卡；闸门与写回见 [../state-protocol.md](../state-protocol.md)；装载顺序与五选项见 [../triggers.md](../triggers.md)；签字页呈现见 [../confirmation-pages.md](../confirmation-pages.md)。纪律基线：[../disciplines/conduct.md](../disciplines/conduct.md)（C1–C7），本阶段高频：C2 术语首现必译、C3 审美取舍升级用户、C5 成本预告、C6 不越层写技术实现。
 
 ## 0. 开场装载清单（顺序写死，不得跳过、不得凭记忆代替读盘）
 
@@ -85,9 +85,9 @@
    - **UI 规范 freeze**：本项目**采用记录**落 `3-design/ui-spec/`——采用哪套 §9 预设、哪个风格方向、素材选型结论，各带指向 `modules/ui-spec/` 的指针；只记「采用了哪套」，**禁复制规范正文**（防分叉事实源，角色卡禁止事项 2）；
    - **事件流归档件**：`edits/*.json` 逐页在盘（schema 见 §4 判据 5c）。
 2. **freeze 语义（C6）**：freeze 后再改原型＝变更——走「改了再签」：说明改动→改→重过第④步自检→重新呈现本闸门重签；不静默改稿。
-3. **闸门呈现**：按 [../confirmation-pages.md](../confirmation-pages.md) 共同要素——大白话摘要 ≤3 句＋后果声明（先于选项：签字＝设计与界面规范定稿进技术方案；退回＝留在阶段 3 按意见修改）＋默认四选项（语义见 [../triggers.md](../triggers.md) L1）；附三视口截图与 review-checklist 自检结果（角色卡职责 5）。
+3. **闸门呈现**：按 [../confirmation-pages.md](../confirmation-pages.md) 共同要素——大白话摘要 ≤3 句＋后果声明（先于选项：签字＝设计与界面规范定稿进技术方案；退回＝留在阶段 3 按意见修改）＋默认五选项（含回退上一闸门，语义见 [../triggers.md](../triggers.md) L1）；附三视口截图与 review-checklist 自检结果（角色卡职责 5）。
 4. **写回**：七步写入法（[../state-protocol.md](../state-protocol.md) §2.2）——签字→`G3-design` 追加 `signed`、`current_stage=4`；退回→`returned`＋原因（**已拍板的 `ui-direction` 保留**，换方向才按 §2.4 追加新决策条目）。同一闸门连续两次退回触 C3 红旗升级，禁第三次硬交。
-5. 四选项必须出自用户之口，禁代签（C3/C4）；用户要看细节→展示原型关键页或自检结果后回到本闸门重新给四选项。
+5. 五选项必须出自用户之口，禁代签（C3/C4）；用户要看细节→展示原型关键页或自检结果后回到本闸门重新给五选项。
 
 ## 4. 完成判据（机械可判定，1–6 全过才进闸门；7 随闸门发生）
 
@@ -106,7 +106,7 @@
 
 - **角色卡**：[../roles/role-3-design.md](../roles/role-3-design.md)——本文不重复其职责/禁止事项，冲突时以纪律包与角色卡为准。
 - **状态读写**：闸门写回与 freeze 语义 [../state-protocol.md](../state-protocol.md) §2.2/§2.3；L2 双写 §2.4/§4；放弃与重启 §1；缺口登记 §5（闸门退回原因不进 open_gaps）。
-- **触发与装载**：[../triggers.md](../triggers.md)（本文 §0 即其装载协议在阶段 3 的展开；L1 四选项见其二；L2 `ui-direction` 见其 L2 表；用户中途「加一页/换风格」按 L3 加功能类与方向变更处理——L2 定稿后再变＝方向变更，须重走该 L2 并评估影响面）。
+- **触发与装载**：[../triggers.md](../triggers.md)（本文 §0 即其装载协议在阶段 3 的展开；L1 五选项见其二；L2 `ui-direction` 见其 L2 表；用户中途「加一页/换风格」按 L3 加功能类与方向变更处理——L2 定稿后再变＝方向变更，须重走该 L2 并评估影响面）。
 - **确认页**：[../confirmation-pages.md](../confirmation-pages.md)。
 - **调研漏斗**：[../research-funnel.md](../research-funnel.md)（§1 触发点表阶段 3 行＋§2 四步法；成本预告与轮次控制按其 §4 衔接 conduct.md C5）。
 - **上游输入（阶段 2）**：`idea2launch/2-requirements/PRD.md`（功能清单 F-xx、不做清单）＋`用户故事.md`（US-001 起编号，规约见 [../templates/user-stories.md](../templates/user-stories.md)，工序出处 [stage-2-requirements.md](stage-2-requirements.md) 第 4 步）——页面来源故事用 US 编号回溯；「以后再说」缺口在本阶段冒出相关诉求时按 triggers.md L3 处理，不静默纳入。

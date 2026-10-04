@@ -79,7 +79,7 @@
 
 **B. L1 闸门 `G4-tech`（方案签字）**
 
-1. 按确认页规范呈现，顺序不可倒：大白话摘要 ≤3 句（做了什么——选型实查＋两份文件；产出在哪——`idea2launch/4-tech/` 两个文件；下一步是什么——阶段 5 排期）＋**后果声明先于选项**（签字＝技术方案定稿进排期，此后改方案＝改已签字产出须重签（C6）；退回＝留在阶段 4 按意见修改）＋**默认四选项：看细节／改了再签／签字／退回**（语义见 [../triggers.md](../triggers.md) L1）。
+1. 按确认页规范呈现，顺序不可倒：大白话摘要 ≤3 句（做了什么——选型实查＋两份文件；产出在哪——`idea2launch/4-tech/` 两个文件；下一步是什么——阶段 5 排期）＋**后果声明先于选项**（签字＝技术方案定稿进排期，此后改方案＝改已签字产出须重签（C6）；退回＝留在阶段 4 按意见修改）＋**默认五选项：看细节／改了再签／签字／退回／回退上一闸门**（语义见 [../triggers.md](../triggers.md) L1）。
 2. 写回（七步写入法，写路径唯一）：签字 → gates 追加 `G4-tech` `signed`、`current_stage=5`；退回 → 追加 `returned`（附原因）留阶段 4；回退上一闸门 → `G3-design` 追加 `returned` 退回阶段 3。
 3. **两档一致**：草图档只自动 L2（上述 A.3），G4 闸门仍须用户真人签，禁代签（C4 矩阵第 5 行）。
 4. 连续两次退回 → 触 C3 红旗升级对齐，禁第三次硬交。
@@ -169,7 +169,7 @@
 - 调研漏斗：[../research-funnel.md](../research-funnel.md)——本文 §2 是其在阶段 4 的实例；证据三纪律（查不到如实报/转引标注/≤1 屏）全文适用。
 - 状态读写：L2 双写与七步写入法 [../state-protocol.md](../state-protocol.md) §2.2/§2.4/§4；G4 语义与播报用语（「技术方案已定稿」）§2.3；中断对账 §4.3。
 - 触发与装载：[../triggers.md](../triggers.md)（本文 §0 即装载协议在阶段 4 的展开）；L2 草图档行为见其二。
-- 确认页：[../confirmation-pages.md](../confirmation-pages.md)——L2 组合选项与 L1 四选项的呈现结构。
+- 确认页：[../confirmation-pages.md](../confirmation-pages.md)——L2 组合选项与 L1 五选项的呈现结构。
 - 工程规范：[../disciplines/engineering.md](../disciplines/engineering.md)——E1–E3 在技术方案实例化表中逐条落「采/裁」；E4 凭据纪律直接约束凭据策略节；E5 实例化在阶段 8 执行，本阶段产出是其输入。
 - 上游输入：PRD [../templates/prd.md](../templates/prd.md)（八节名）；用户故事编号规约 [../templates/user-stories.md](../templates/user-stories.md)；维 1 结论出自 [../question-bank.md](../question-bank.md)。
 - 下游去向：里程碑切分→阶段 5 排期；token 迁移映射→阶段 6 开发；实例化表＋凭据策略→阶段 8 打包生成项目 AGENTS.md。

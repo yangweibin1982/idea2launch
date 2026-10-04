@@ -107,4 +107,4 @@ idea2launch · 技术方案模板（阶段 4 产出，简版）
 | 退回意味着 | 留在阶段 4，按退回原因修改后重新呈现；技术栈改拍板＝重走 L2（追加新决策条目，旧条目保留） |
 | 状态 | {{草稿／已签字（G4-tech＝signed）／已退回（G4-tech＝returned，原因：{{…}}）}} |
 
-<!-- 填法提示：签字动作不在本文件里发生——按确认页规范（references/confirmation-pages.md）呈现摘要＋后果＋四选项；顺序＝先 L2 tech-stack 双写（先 decisions.log 后 state.json），再 G4-tech 闸门；用户明确选择后，先写回 state.json，再把本节「状态」改为与盘上一致。 -->
+<!-- 填法提示：签字动作不在本文件里发生——按确认页规范（references/confirmation-pages.md）呈现摘要＋后果＋五选项；顺序＝先 L2 tech-stack 双写（先 decisions.log 后 state.json），再 G4-tech 闸门；用户明确选择后，先写回 state.json，再把本节「状态」改为与盘上一致。 -->

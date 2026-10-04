@@ -288,18 +288,18 @@ try {
   check('D4 no cross-shell require (no zcode path in any require spec)',
     [...l3Req, ...askReq].every((s) => !s.includes('zcode')), '');
 
-  const NOSEG = 'nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename';
+  // D5（2026-10-04 升级为裸注记）：在线 p/default 与本地快照对同一守卫模式的
+  // 规则 ID 不同（上游规则目录重构致 ID 分段变化），按 ID 注记只挡得住一边——
+  // 裸 `nosemgrep` 行级抑制对两个规则源都免疫；此处校验「全部注记行均为裸注记」。
   const bareAnnotated = (src) => {
-    const lines = src.split(/\r?\n/).filter((l) => l.includes('nosemgrep:'));
-    return lines.length > 0 && lines.every((l) => /nosemgrep:[A-Za-z0-9.\-]+\s*$/.test(l));
+    const all = src.split(/\r?\n/).filter((l) => l.includes('nosemgrep'));
+    const bare = all.filter((l) => /nosemgrep\s*$/.test(l.trim()) || /\/\/\s*nosemgrep\s*$/.test(l.trim()));
+    return all.length > 0 && all.length === bare.length;
   };
-  check('D5a l3-hint.js carries bare nosemgrep annotations (no trailing prose)',
-    l3Src.includes(NOSEG) && bareAnnotated(l3Src),
-    'lines=' + l3Src.split(/\r?\n/).filter((l) => l.includes('nosemgrep:')).length);
-  check('D5b inject-global.js carries bare nosemgrep annotations (no trailing prose)',
-    askSrc.includes(NOSEG) && bareAnnotated(askSrc)
-      && askSrc.includes('nosemgrep:javascript.lang.security.audit.path-traversal.path-join-resolve-traversal'),
-    '');
+  check('D5a l3-hint.js carries bare nosemgrep annotations (rule-id agnostic)',
+    bareAnnotated(l3Src), '');
+  check('D5b inject-global.js carries bare nosemgrep annotations (rule-id agnostic)',
+    bareAnnotated(askSrc), '');
 
   const scanFiles = [L3, ASK, SKILL, INSTALL, fileURLToPath(import.meta.url)];
   // 本扫描器连自己也一起扫，所以签名不允许以字面量出现在本文件任何位置

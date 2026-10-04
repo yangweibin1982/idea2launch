@@ -123,7 +123,7 @@ function readState(statePath) {
   // isSafeDir(cwd) + fixed 'idea2launch/state.json' suffix; this hook is
   // read-only and fail-silent.
   let raw;
-  try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return { ok: false }; } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
+  try { raw = fs.readFileSync(statePath, 'utf8'); } catch (_) { return { ok: false }; } // nosemgrep
   try {
     const s = JSON.parse(raw);
     const stage = typeof s.current_stage === 'number' ? s.current_stage : null;
@@ -156,7 +156,7 @@ function run(raw) {
   // fixed and reviewable (read-only existence/parse of a fixed suffix).
   const statePath = cwd + path.sep + 'idea2launch' + path.sep + 'state.json';
   let inProgress;
-  try { inProgress = fs.existsSync(statePath); } catch (_) { return { code: 0, stdout: '' }; } // nosemgrep:javascript.lang.security.audit.detect-non-literal-fs-filename
+  try { inProgress = fs.existsSync(statePath); } catch (_) { return { code: 0, stdout: '' }; } // nosemgrep
 
   let hint;
   if (inProgress) {

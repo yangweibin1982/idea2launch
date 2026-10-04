@@ -104,7 +104,7 @@
     },
     "open_gaps": {
       "type": "array",
-      "description": "未决缺口登记（已知但暂不处理的事项，跨会话不丢）。元素结构 M2 缺口裁决工作台完整版定稿，v1 不锁定。"
+      "description": "未决缺口登记（已知但暂不处理的事项，跨会话不丢）。元素结构 v1 约定见 references/state-protocol.md §5；缺口分类（kind）、裁决流程与写入路径见 references/gap-workbench.md（M2 定稿）。"
     },
     "agent_mode": {
       "enum": ["single", "multi"],

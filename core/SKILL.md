@@ -49,7 +49,7 @@ description: 智能体应用新手向导——完全非技术的用户只带一�
 
 **任何会话开场：读 `idea2launch/state.json` → 向用户播报当前阶段与可做动作，从断点继续，不重做已签字阶段。**
 
-读写细则（写路径唯一/快照回滚/原子写/gate 命名/decisions.log/open_gaps）见 [references/state-protocol.md](references/state-protocol.md)（T8 交付）。
+读写细则（写路径唯一/快照回滚/原子写/gate 命名/decisions.log/open_gaps）见 [references/state-protocol.md](references/state-protocol.md)（T8 交付）；缺口分类、裁决页与裁决落盘见 [references/gap-workbench.md](references/gap-workbench.md)（M2 交付）。
 
 ## 4. 触发协议
 

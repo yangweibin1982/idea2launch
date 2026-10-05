@@ -169,4 +169,36 @@ check("场景：gates 恰 1 条 returned", returnedCount === 1, `实际=${return
 check("场景：l2_decisions 恰 1 条 auto=true", autoCount === 1, `实际=${autoCount}`);
 check("场景：open_gaps 恰 1 条 open", openGapCount === 1, `实际=${openGapCount}`);
 
+// ---------- 五、双写内容对账（协议 §4.3，F-13 修订：时间戳一致＋内容逐字核对，漂移以 log 为准） ----------
+let logLines = [];
+try {
+  const logPath = join(root, "core", "references", "examples", "decisions-example.jsonl");
+  logLines = readFileSync(logPath, "utf8")
+    .split(/\r?\n/)
+    .filter((l) => l.trim())
+    .map((l) => JSON.parse(l));
+  check(
+    "双写：decisions-example.log 逐行可解析且七字段齐全（§4.1）",
+    logLines.every((row) =>
+      ["ts", "id", "question", "chosen", "alternatives", "auto", "rationale"].every((f) => f in row) &&
+      isStr(row.ts) && isStr(row.id) && isStr(row.chosen) &&
+      Array.isArray(row.alternatives) && typeof row.auto === "boolean" && isStr(row.rationale),
+    ),
+  );
+} catch (e) {
+  check("双写：decisions-example.log 逐行可解析且七字段齐全（§4.1）", false, e.message);
+}
+const latestLog = {};
+for (const row of logLines) if (L2_IDS.includes(row.id)) latestLog[row.id] = row; // 追加序，后者覆盖
+const latestL2 = {};
+for (const d of example.l2_decisions ?? []) latestL2[d.id] = d;
+for (const id of L2_IDS) {
+  if (latestL2[id] === undefined) continue; // 场景未涉该决策点
+  const row = latestLog[id];
+  if (!check(`双写覆盖：${id} 在 log 有对应行`, row !== undefined)) continue;
+  check(`双写时间戳一致：${id} log.ts === state.at`, row.ts === latestL2[id].at, `log=${row.ts} state=${latestL2[id].at}`);
+  check(`双写内容逐字：${id}.chosen 一致`, row.chosen === latestL2[id].chosen, `"${row.chosen}" vs "${latestL2[id].chosen}"`);
+  check(`双写内容逐字：${id}.rationale 一致`, (row.rationale || "") === (latestL2[id].rationale || ""), `"${row.rationale || ""}" vs "${latestL2[id].rationale || ""}"`);
+}
+
 finish();

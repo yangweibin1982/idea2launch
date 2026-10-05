@@ -7,7 +7,7 @@
 
 | 序 | 必读 | 目的 |
 |---|---|---|
-| 1 | `idea2launch/state.json` | 确认 `current_stage=1`、`project.tier`、已签字闸门、`open_gaps`（读协议见 [../state-protocol.md](../state-protocol.md) §1；文件缺失＝新项目→先走 [../../SKILL.md](../../SKILL.md) §0 开工三件事，禁止跳过建档直接评估） |
+| 1 | `idea2launch/state.json` | 确认 `current_stage=1`、`project.tier`、已签字闸门、`open_gaps`（读协议见 [../state-protocol.md](../state-protocol.md) §1；文件缺失＝新项目→先走 [../../SKILL.md](../../SKILL.md) §0 开工四件事，禁止跳过建档直接评估） |
 | 2 | [../roles/role-1-charter.md](../roles/role-1-charter.md) | 评估师职责/输入/输出/禁止事项（上下文预算不足可只读「职责/禁止事项」两节，裁剪须在开场播报一句留痕） |
 | 3 | [../disciplines/conduct.md](../disciplines/conduct.md) | 七纪律基线（C1-C7） |
 | 4 | 本文（stage-1-charter.md） | 本阶段工序与产出格式 |
@@ -45,7 +45,7 @@
 
 1. 需求化——从想法与 12 维问答中提炼 2-4 个竞品调研问题；
 2. 顾问替查——实查 2-4 个同类产品/方案，一手来源优先；
-3. 对照呈现——大白话对照表（优缺点/适用场景/成本），每行带来源链接＋检索日期，给推荐参考项＋一句理由；
+3. 对照呈现——大白话对照表（优缺点/适用场景/成本；本阶段为调研漏斗轻量形态，五维矩阵完整形态见 research-funnel §2 第③步），每行带来源链接＋检索日期，给推荐参考项＋一句理由；
 4. 用户拍板——阶段 1 的拍板动作即第⑥步闸门四选项（落档分派见 research-funnel.md §2 第④步分派表：对照表与推荐写入评估报告，不另写 decisions.log）。
 
 ### 第④步 评估报告组装

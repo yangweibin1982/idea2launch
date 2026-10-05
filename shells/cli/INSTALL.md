@@ -48,7 +48,7 @@ L3 语义权威＝`core/references/triggers.md` §二 L3（检测开发意图 �
 
 ## inject_global 首次运行询问
 
-技能开场（core/SKILL.md §0 第 2 件事）会自动调用本壳脚本；也可手工直接用：
+技能开场（core/SKILL.md §0 第 3 件事）会自动调用本壳脚本；也可手工直接用：
 
 ```
 node inject-global.js [项目根]                 # 交互终端：打印问题→读一行回答→写回

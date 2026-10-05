@@ -8,7 +8,7 @@
 | 部分 | 文件 | 状态 |
 |---|---|---|
 | ① 全局 UI 设计规范 | `ui-spec.md`（主规范：token 三层/色彩/排印/间距/圆角阴影层级/动效/密度触控/图标插画 ＋ §9 新手默认 token 套装与风格预设 ＋ §10 LLM 生成原型 checklist）<br>`style-anchors.md`（风格方向库＋原型技术栈约束）<br>`components.md`（组件状态矩阵）<br>`interaction-a11y.md`（交互与可达性硬指标）<br>`review-checklist.md`（原型交付自检清单） | ✅ 已交付 |
-| ② 页面设计做法 | `page-design.md`（PRD→页面清单→信息架构→布局选型→原型工序）、`prototype-spec.md`（单文件 HTML 原型技术规范）、`templates/prototype-template.html`（原型骨架模板） | ✅ 已交付 |
+| ② 页面设计做法 | `page-design.md`（PRD→页面清单→信息架构→布局选型→原型工序）、`prototype-spec.md`（单文件 HTML 原型技术规范）、`templates/prototype-template.html`（原型骨架模板）、`templates-registry.md`（页面模板库 v1：骨架×风格已验证组合，新页生成前先查） | ✅ 已交付 |
 | ③ 可视化编辑层 | `visual-editor/`（GrapesJS 内核＋新手极简工具条：改文字/删除/上移下移/换图/token 预设切换/线性撤销/三视口预览/导出修改包＋`USAGE.md` 外行人使用卡） | ✅ 已交付 |
 
 三件可独立使用：任何「PRD→原型」流程都可按下方装载顺序取用①②；原型交给用户后按 `visual-editor/USAGE.md` 三步完成可视修改。

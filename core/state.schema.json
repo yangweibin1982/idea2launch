@@ -38,6 +38,13 @@
         "tier": {
           "enum": ["draft", "production"],
           "description": "双档：draft=草图档（砍辩论/评审，自动采用推荐项留痕）；production=生产档（全流程）。见 G1 决策 16。"
+        },
+        "capabilities": {
+          "type": "object",
+          "description": "资产盘点简报的用户拍板留痕（M2.2 T3）：键＝能力名，值＝用户选择 adopt（采纳增强）| skip（跳过）。键的约定：browser（浏览器自动化）/ web_search（网络检索）/ knowledge（知识服务）/ code_intel（代码索引）/ companion_skills（伴生技能）/ repo_reference（安装形态迁移建议：adopt＝迁移方式①仓库引用，skip＝留在方式②）；子代理探测结果落顶层 agent_mode，不占本字段键。字段缺失或缺某项＝未盘点/未采纳，按 references/enhancements.md §4 降级规则静默跳过；旧项目按「全未采纳」读，不补写、不报错（向后兼容，见 enhancements.md §3）。",
+          "additionalProperties": {
+            "enum": ["adopt", "skip"]
+          }
         }
       }
     },

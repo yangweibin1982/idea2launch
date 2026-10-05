@@ -14,7 +14,7 @@
 ## 输入
 
 - 用户的想法原话（会话中的原始表述，评估报告须引用原句）。
-- `idea2launch/state.json`（开工三件事建档后：`project.tier`、`agent_mode` 等）。
+- `idea2launch/state.json`（开工四件事建档后：`project.tier`、`agent_mode`、`project.capabilities` 等）。
 - 行为规范包 [../disciplines/conduct.md](../disciplines/conduct.md)（七纪律全程约束）。
 - 阶段细则 [../stages/stage-1-charter.md](../stages/stage-1-charter.md)（评估工序与报告格式）。
 - 方案调研漏斗 [../research-funnel.md](../research-funnel.md)（竞品替查四步法）。

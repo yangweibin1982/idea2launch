@@ -15,7 +15,7 @@
 
 - 阶段 2 闸门签字后的 `idea2launch/2-requirements/PRD.md` 与 `用户故事.md`。
 - `idea2launch/state.json` 与 L2 决策 `ui-direction` 的拍板记录（风格方向，见 [../triggers.md](../triggers.md) L2）。
-- `modules/ui-spec/` 全套：`ui-spec.md`、`style-anchors.md`、`components.md`、`interaction-a11y.md`、`review-checklist.md`、`page-design.md`、`prototype-spec.md`、`visual-editor/`（装载顺序按其 README）。
+- `modules/ui-spec/` 全套：`ui-spec.md`、`style-anchors.md`、`components.md`、`interaction-a11y.md`、`review-checklist.md`、`page-design.md`、`prototype-spec.md`、`templates-registry.md`、`visual-editor/`（装载顺序按其 README）。
 - 行为规范包 [../disciplines/conduct.md](../disciplines/conduct.md)；阶段细则 [../stages/stage-3-design.md](../stages/stage-3-design.md)。
 
 ## 输出

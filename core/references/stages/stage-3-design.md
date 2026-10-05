@@ -19,12 +19,12 @@
 - 开工三问（界面给谁用/什么场景/有无品牌）时：只读 README 该节；
 - 摊风格候选时：读 `style-anchors.md` 风格方向库（取 2–3 个候选）；
 - token 落定时：读 `ui-spec.md` §9（预设块整块取用，不读全文）；
-- 逐页设计与生成原型时：读 `page-design.md` 布局库、`prototype-spec.md`、`templates/prototype-template.html`、`ui-spec.md` §10；组件与可达性判据按页用时查 `components.md`、`interaction-a11y.md`；
+- 逐页设计与生成原型时：读 `page-design.md` 布局库、`prototype-spec.md`、`templates/prototype-template.html`、`ui-spec.md` §10；**每页动手前先查 `templates-registry.md`**（页面模板库，适用即复制复用）；组件与可达性判据按页用时查 `components.md`、`interaction-a11y.md`；
 - 交付自检时：读 `review-checklist.md`；
 - 引导用户改稿时：读 `visual-editor/USAGE.md`（用户话术）＋ `visual-editor/EDITOR-SPEC.md`（智能体侧行为与边界）。
 
 - 裁剪规则：1/3/4 不可裁，2 可只读两节，5 按上述分步即天然裁剪——裁了什么在开场播报中明示一句（[../triggers.md](../triggers.md) §四）。
-- **显式开播播报**（triggers.md §一.3）：「现在进入**阶段 3·设计师**：我会把你的需求画成能亲眼看到、亲手改的页面样品（行话叫原型——看起来和真应用几乎一样、能点能看，但还不能真用），你满意并签字后才进入开发准备。产出落在 `idea2launch/3-design/`。」
+- **显式开播播报**（triggers.md §一.4）：「现在进入**阶段 3·设计师**：我会把你的需求画成能亲眼看到、亲手改的页面样品（行话叫原型——看起来和真应用几乎一样、能点能看，但还不能真用），你满意并签字后才进入开发准备。产出落在 `idea2launch/3-design/`。」
 - 本阶段闸门标识：`G3-design`（gate 命名见 [../state-protocol.md](../state-protocol.md) §2.3）。
 - 术语首现翻译（C2）：IA（信息架构）＝页面之间谁从哪进、谁是主入口的关系地图；token＝界面里颜色、字号、间距这些数值的「统一命名」，改一处全站跟着变；freeze＝定稿封存，定下来不再动，再改就算变更。
 
@@ -52,7 +52,7 @@
    - 草图档（`project.tier=draft`）自动采用推荐项并留痕：`auto=true`＋`rationale` 必填，向用户播报「已自动采用 X，理由是…，可随时改」（[../state-protocol.md](../state-protocol.md) §2.4）；
    - 拍板双写落档：decisions.log 先追加一行、state.json `l2_decisions` 后写（格式与顺序见 [../state-protocol.md](../state-protocol.md) §4，先 log 后 state）。
 2. **token 基座**：按拍板方向取 `ui-spec.md` §9 三套预设之一**整块复制**（有品牌则推导覆盖并复校对比度）——不删变量、不改变量名（可视化编辑层的 token 预设切换依赖同名约定，`prototype-spec.md` §2）。
-3. **逐页三件事**（选骨架/绑风格/填内容）：布局库五类骨架选型判据、真实文案三优先级、data-pid 区块规划全按 page-design 步骤 3；本阶段特有红线：页面设计只定「长什么样」，**禁出现技术实现**（语言/框架/数据库/部署，C6 不越层——那是阶段 4 的事）。
+3. **逐页三件事**（选骨架/绑风格/填内容）：布局库五类骨架选型判据、真实文案三优先级、data-pid 区块规划全按 page-design 步骤 3；每页动手前先查 `modules/ui-spec/templates-registry.md`（模板库检索四步：适用即复制复用改文案，不适用再从零生成）；本阶段特有红线：页面设计只定「长什么样」，**禁出现技术实现**（语言/框架/数据库/部署，C6 不越层——那是阶段 4 的事）。
 
 ### 第④步 原型生成（含素材选型）
 
@@ -89,7 +89,7 @@
 4. **写回**：七步写入法（[../state-protocol.md](../state-protocol.md) §2.2）——签字→`G3-design` 追加 `signed`、`current_stage=4`；退回→`returned`＋原因（**已拍板的 `ui-direction` 保留**，换方向才按 §2.4 追加新决策条目）。同一闸门连续两次退回触 C3 红旗升级，禁第三次硬交。
 5. 五选项必须出自用户之口，禁代签（C3/C4）；用户要看细节→展示原型关键页或自检结果后回到本闸门重新给五选项。
 
-## 4. 完成判据（机械可判定，1–6 全过才进闸门；7 随闸门发生）
+## 4. 完成判据（机械可判定，1–7 全过才进闸门；8 随闸门发生）
 
 1. **页面清单**：每行四列齐全（页面名/大白话职责/主要动作/来源故事 US-xxx）；来源故事里的每个 US 编号能在 `idea2launch/2-requirements/用户故事.md` 中找到（`grep -c "US-"` 对照可判定）；
 2. **IA 硬闸**：两条硬规则核查通过＋用户确认留痕在会话；
@@ -100,7 +100,8 @@
    - b. **可视编辑闭环 UAT 走通**：按 `visual-editor/USAGE.md` 三步卡剧本完成一轮真实闭环「载入→改→导出修改包→拖回 `3-design/`→说『原型改好了』→diff→归档」（通道 B 文字指挥等效），留痕；
    - c. **事件流合 schema**：归档的 `edits/*.json` 逐条核——`seq` 从 1 连续自增、`pid` 非空（元素 pid 或 `__theme__`/`__global__` 占位）、`action` 在八值枚举内；schema 权威定义＝`modules/ui-spec/visual-editor/EDITOR-SPEC.md` §6；
 6. **素材选型留痕**：触发过的类各有结论（选定或「未查到＋途径」），对照表每行带来源链接＋检索日期，拍板已落 decisions.log；未触发的类有「无此类需求」一句记录；
-7. **闸门写回**：gates 有 `G3-design` 最新条目（status ∈ {signed, returned}）——签字落盘是进入阶段 4 的唯一凭据。
+7. **规范修订清单裁决**：`idea2launch/3-design/spec-amendments.md` 存在时，清单逐条已裁决、无 open 残留（每条状态 ∈ {采纳, 下轮再议, 维持原规范}；机制见 [../../../modules/ui-spec/page-design.md](../../../modules/ui-spec/page-design.md)「决策反哺」节）——有 open 残留禁 freeze；
+8. **闸门写回**：gates 有 `G3-design` 最新条目（status ∈ {signed, returned}）——签字落盘是进入阶段 4 的唯一凭据。
 
 ## 5. 与其他协议的衔接
 

@@ -9,7 +9,7 @@
 1. **决定记录在两处**：
    - 标记文件：用户项目根 `idea2launch/.inject-global-answer`（无扩展名文本文件，内容为一行 `on`／`off`／`ask`）——用于「是否还需要问」的快速判据；
    - `idea2launch/state.json` 的 `inject_global` 字段——schema required，是权威记录。
-2. **写时机与写路径**：注入询问发生在建档（开工三件事第 3 步，W0）**之前**；标记文件随时可写；`state.json` 的 `inject_global` 随 W0 建档落入首版。若 state.json 已存在（事后改配置），经用户确认后按 `core/references/state-protocol.md` §2.2 七步写入法最小改写该字段即可——该字段本身就是留痕，不另写 `decisions.log`。
+2. **写时机与写路径**：注入询问发生在建档（开工四件事第 4 步，W0）**之前**；标记文件随时可写；`state.json` 的 `inject_global` 随 W0 建档落入首版。若 state.json 已存在（事后改配置），经用户确认后按 `core/references/state-protocol.md` §2.2 七步写入法最小改写该字段即可——该字段本身就是留痕，不另写 `decisions.log`。
 3. **state.json 未建档时禁止创建半截 state.json**：只写标记文件，答案在建档时从标记读入并落入 `inject_global`（半截状态文件会触发读协议的损坏恢复流程）。
 4. **询问呈现**：按 `core/references/confirmation-pages.md`「CLI 宿主」规范——大白话摘要＋后果声明前置＋选项式提问；禁倒计时、禁弱化否定选项；直接回车/不选＝`ask`（schema 默认，属配置缺省值，不是诱导性默认项）。
 5. **「on」的实际注入物**：工作规范**摘要＋文件指针**（`core/references/disciplines/conduct.md` 七纪律要点、`references/disciplines/engineering.md` 工程基线要点），**不整包复制**；注入前向用户展示将写入的内容与目标文件路径，注入后复述写了什么、写到哪。宿主全局规则的文件名因宿主而异（ZCode/通用 CLI 宿主常见为 `AGENTS.md`），以用户确认为准。

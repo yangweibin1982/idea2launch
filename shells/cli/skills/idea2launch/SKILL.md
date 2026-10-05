@@ -27,7 +27,7 @@ L3 提示脚本与注入询问脚本随本壳分发，两个候选位置：
 
 ## 3. 启动方式
 
-- **显式启动**（「启动 idea2launch」「用 idea2launch 做一个…」）→ 装载 core/SKILL.md，从其 §0「开工三件事」开始（能力探测 → §4 注入询问 → 建档与选档）。
+- **显式启动**（「启动 idea2launch」「用 idea2launch 做一个…」）→ 装载 core/SKILL.md，从其 §0「开工四件事」开始（资产盘点 → 能力探测 → §4 注入询问 → 建档与选档）。
 - **续跑**（用户项目根已有 `idea2launch/state.json`）→ 按 core/references/state-protocol.md §1 读协议播报当前阶段与可做动作，从断点继续；禁止重做已签字阶段。
 - **L3 意图提示**：宿主已挂 `l3-hint.js` 钩子 → 由钩子承担（检测开发意图 → 提示可用、不自动执行）；无钩子 → 按 §5 每轮自查。检测面与提示话术的语义定义见 core/references/triggers.md（核心定义检测面与话术，壳实现为钩子或智能体自查，两者行为一致）。
 
@@ -54,7 +54,7 @@ node <§2 探测到的 inject-global.js> [用户项目根] --answer on|off|ask
 3. **写回**：
    - 把答案写一行进 `idea2launch/.inject-global-answer`（目录不存在则先建目录）；
    - state.json **已建档** → 经用户确认后按 core/references/state-protocol.md §2.2 七步写入法最小改写其 `inject_global` 字段（schema required，取值枚举 ask|on|off；该字段本身即留痕，不另写 decisions.log）；
-   - state.json **尚未建档** → 只写标记文件；答案会在 §0 第 3 步建档（W0）时落入 `inject_global` 字段；
+   - state.json **尚未建档** → 只写标记文件；答案会在 §0 第 4 步建档（W0）时落入 `inject_global` 字段；
    - 选 **on** → 执行注入：把工作规范摘要＋文件指针（core/references/disciplines/conduct.md 与 engineering.md 的要点）追加进宿主全局规则文件，**不整包复制**；注入前向用户展示将写入的内容与目标文件，注入后在回复中复述写了什么、写到了哪；
    - 选 **off / ask** → 不触碰任何宿主全局文件。
 

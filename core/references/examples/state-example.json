@@ -3,7 +3,13 @@
   "project": {
     "name": "社区宠物寄养互帮平台",
     "created": "2026-10-02",
-    "tier": "draft"
+    "tier": "draft",
+    "capabilities": {
+      "web_search": "adopt",
+      "browser": "skip",
+      "knowledge": "skip",
+      "companion_skills": "adopt"
+    }
   },
   "current_stage": 3,
   "gates": [

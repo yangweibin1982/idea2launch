@@ -85,6 +85,35 @@ check(
   schema.properties.project.properties.tier.enum.includes(proj.tier),
 );
 
+// ---------- 二·补 project.capabilities（M2.2 T3：资产盘点拍板留痕，可选字段） ----------
+const CAP_SCHEMA = schema.properties.project.properties.capabilities;
+check(
+  "schema 已声明 project.capabilities 且 additionalProperties 带枚举（T3）",
+  CAP_SCHEMA !== undefined && Array.isArray(CAP_SCHEMA?.additionalProperties?.enum),
+);
+if (CAP_SCHEMA) {
+  const CAP_ENUM = CAP_SCHEMA.additionalProperties.enum;
+  check("schema capabilities 值枚举恰为 adopt/skip", JSON.stringify(CAP_ENUM) === JSON.stringify(["adopt", "skip"]));
+  const caps = proj.capabilities;
+  if (caps === undefined) {
+    check("capabilities 缺席＝未盘点（合法：向后兼容，旧项目按全未采纳读）", true);
+  } else {
+    check(
+      "capabilities 是非空对象（非数组）",
+      typeof caps === "object" && caps !== null && !Array.isArray(caps) && Object.keys(caps).length > 0,
+    );
+    const capKeys = Object.keys(caps ?? {});
+    for (const k of capKeys) {
+      check(`capabilities["${k}"] ∈ schema 枚举(adopt|skip)`, CAP_ENUM.includes(caps[k]), String(caps[k]));
+    }
+    check(
+      "场景：capabilities 为 adopt/skip 混合（票面样例要求 3-4 键覆盖两值）",
+      capKeys.length >= 3 && capKeys.length <= 4 &&
+        capKeys.some((k) => caps[k] === "adopt") && capKeys.some((k) => caps[k] === "skip"),
+    );
+  }
+}
+
 check(
   "current_stage 为 1-9 整数（schema min/max）",
   isInt(example.current_stage) &&

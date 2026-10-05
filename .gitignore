@@ -3,6 +3,9 @@
 .codegraph/
 .mimosa/
 
+# 自进化台账（单人暂存层，同 .zcode 仓政策：出库）
+.learnings/
+
 # 依赖与运行产物
 node_modules/
 *.log

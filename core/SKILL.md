@@ -74,3 +74,5 @@ description: 智能体应用新手向导——完全非技术的用户只带一�
 | 方案调研漏斗 | `references/research-funnel.md` | 阶段 3/4 选型：顾问替查＋证据可见 |
 | 触发与装载协议 | `references/triggers.md` | L1-L3 触发＋资产盘点七类探测面＋上下文装载协议 |
 | 确认页规范 | `references/confirmation-pages.md` | 双宿主确认页 |
+| 周蒸馏简报 | `references/evolution-brief.md` | 项目经验蒸馏双输出：优化用户自身工作流＋上游 issue 草稿（经同意才提交） |
+| 可选增强层 | `references/enhancements.md` | 适配器注册表（知识/代码索引/伴生技能）＋探测-建议-采纳协议＋纯净性四关 |

@@ -55,6 +55,8 @@ Stage-3 visual editor: pick a style preset, edit in place — every change is ve
 
 [MIT](LICENSE) — Copyright (c) 2026 idea2launch contributors
 
+The stage-3 visual editor vendors [GrapesJS](https://github.com/GrapesJS/grapesjs) 0.23.6 (BSD-3-Clause) and its bundled runtime dependencies; their texts and attribution live in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and `modules/ui-spec/visual-editor/lib/LICENSE-grapesjs.txt`.
+
 ---
 
 ## 中文说明（正文）

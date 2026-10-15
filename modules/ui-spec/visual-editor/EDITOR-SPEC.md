@@ -2,7 +2,7 @@
 
 > 归属：idea2launch 第 3 阶段（设计）· `modules/ui-spec/visual-editor/`。
 > 依据：`.squad/idea2launch/spec-ui-design-layer.md`（下称「战役规格」）§6/§7/§8/§10。
-> 架构：GrapesJS 0.23.6 内核（`lib/grapes.min.js|css`，离线资产）＋薄自建新手 UI；GrapesJS 默认 panels/blocks/style manager/asset manager 全部不渲染。
+> 架构：GrapesJS 0.23.6 内核（`lib/grapes.min.js|css`，离线资产；BSD-3-Clause，许可原文随包在 `lib/LICENSE-grapesjs.txt`，声明见仓库根 `THIRD-PARTY-NOTICES.md`）＋薄自建新手 UI；GrapesJS 默认 panels/blocks/style manager/asset manager 全部不渲染。
 > 使用方式：双击 `visual-editor.html`（file:// 协议）即可打开；零外部请求，断网可用。
 
 ## 1. 定位与边界

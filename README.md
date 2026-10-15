@@ -23,6 +23,12 @@ Most "AI builds your app" tools assume you can read code and review a diff — n
 
 Prerequisites: an agent host (ZCode desktop/CLI, or any CLI agent that loads markdown skills) and Node.js ≥ 18.
 
+```bash
+git clone https://github.com/yangweibin1982/idea2launch.git
+```
+
+Below, `<repo>` means the clone root above.
+
 **ZCode shell** — two install ways, see [shells/zcode/INSTALL.md](shells/zcode/INSTALL.md):
 
 1. Repo-as-market (recommended, updates via `git pull`): add `<repo>/shells/zcode` as a local plugin market in ZCode → install **idea2launch** → reopen session;
@@ -105,9 +111,15 @@ Stage-3 visual editor: pick a style preset, edit in place — every change is ve
 
 前置：一个智能体宿主（ZCode 桌面版/CLI，或任意能装载 markdown 技能的 CLI 智能体）＋ Node.js ≥ 18。
 
+```bash
+git clone https://github.com/yangweibin1982/idea2launch.git
+```
+
+下文 `<repo>` 即上面这个克隆根目录。
+
 **ZCode 壳**（两种装法，详见 [shells/zcode/INSTALL.md](shells/zcode/INSTALL.md)）：
 
-1. **仓库即市场**（推荐，更新只需 git pull）：ZCode → 插件市场 → 添加 → 选 `<仓库>/shells/zcode` 目录 → 安装 **idea2launch** → 重开会话；
+1. **仓库即市场**（推荐，更新只需 git pull）：ZCode → 插件市场 → 添加 → 选 `<repo>/shells/zcode` 目录 → 安装 **idea2launch** → 重开会话；
 2. **复制补全**（宿主把插件复制进缓存导致「core 缺失」时用）：把壳内容＋`core/` 合成一个自包含目录再添加安装。
 
 **通用 CLI 壳**：把技能目录链接或复制进宿主技能目录即可；`l3-hint.js` 钩子契约与 `inject-global.js` 注入询问可选，详见 [shells/cli/INSTALL.md](shells/cli/INSTALL.md)。装完自检：`node shells/cli/dryrun.mjs` 末行须 `0 failed`。

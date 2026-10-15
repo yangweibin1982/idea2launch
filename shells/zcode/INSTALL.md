@@ -7,7 +7,7 @@
 
 - ZCode 桌面版/CLI（支持本地插件市场，即「添加插件市场」功能）；
 - **Node.js ≥ 18** 且 `node` 在 PATH（L3 钩子以 `node` 运行；不装 Node 技能仍可用，仅无 L3 提示）；
-- 本仓库本体（`git clone <仓库地址>` 或下载解压），下文以 `<repo>` 指其根目录。
+- 本仓库本体（`git clone https://github.com/yangweibin1982/idea2launch.git` 或下载解压），下文以 `<repo>` 指其根目录。
 
 ## 方式① 仓库即插件（推荐：更新只需 git pull）
 
@@ -32,7 +32,7 @@
 
 ## 安装后验证（三步，逐条可照做）
 
-1. **插件列表可见**：ZCode → 设置 → 插件管理 → 列表出现 **idea2launch 0.1.0**，详情页可见技能 `idea2launch` 与钩子 `UserPromptSubmit`（`l3-intent-hint.js`）条目且状态可运行；
+1. **插件列表可见**：ZCode → 设置 → 插件管理 → 列表出现 **idea2launch 0.2.0**，详情页可见技能 `idea2launch` 与钩子 `UserPromptSubmit`（`l3-intent-hint.js`）条目且状态可运行；
 2. **技能加载**：在一个空目录开新会话，输入「**启动 idea2launch**」→ 智能体应按九阶段向导开场（能力探测→注入询问→建档选档），而不是当普通聊天闲聊；若提示 core 缺失，按方式②第 2 步补复制；
 3. **L3 钩子生效**：在**没有** `idea2launch/` 目录的工作区开新会话，输入「帮我做一个记录喂猫时间的应用」→ 出现 ≤3 行的 `[idea2launch]` 提示（建议九阶段向导、说「启动 idea2launch」开始）且**不自动开工**；再输入一句含「idea2launch」的话 → 不重复提示（白名单豁免）。普通问候（「你好」）→ 无提示。
 

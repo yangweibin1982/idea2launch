@@ -4,7 +4,7 @@
     {
       "name": "idea2launch",
       "source": ".",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Nine-stage guided wizard: from a raw idea to a running web app plus full docs. Thin ZCode shell over the platform-neutral core.",
       "displayName": "idea2launch",
       "displayName_i18n": {

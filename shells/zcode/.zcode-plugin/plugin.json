@@ -1,6 +1,6 @@
 {
   "name": "idea2launch",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Nine-stage guided wizard for non-technical users: bring an idea, get a running web app plus full docs. Thin ZCode shell - registers the idea2launch skill and an L3 intent hint hook; all workflow logic lives in the platform-neutral core.",
   "description_i18n": {
     "en": "Nine-stage guided wizard for non-technical users: bring an idea, get a running web app plus full docs (idea evaluation, requirements, design, tech, plan, build, quality, delivery, light operations). Thin ZCode shell: skill registration plus an L3 intent hint hook; all workflow logic lives in the platform-neutral core.",

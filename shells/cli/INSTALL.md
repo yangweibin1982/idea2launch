@@ -8,7 +8,7 @@
 
 - 任一 CLI 智能体宿主：有技能目录或等价的系统提示注入点（下文统称「宿主技能目录」）；
 - **Node.js ≥ 18** 且 `node` 在 PATH（`l3-hint.js`/`inject-global.js`/`dryrun.mjs` 以 `node` 运行；不装 Node 技能仍可用——L3 退化为薄入口 §5 的智能体每轮自查，注入询问退化为薄入口 §4 的手工三步）；
-- 本仓库本体（`git clone <仓库地址>` 或下载解压），下文以 `<repo>` 指其根目录，以 `<宿主技能目录>` 指宿主装载技能的位置。
+- 本仓库本体（`git clone https://github.com/yangweibin1982/idea2launch.git` 或下载解压），下文以 `<repo>` 指其根目录，以 `<宿主技能目录>` 指宿主装载技能的位置。
 
 ## 方式① 目录引用（推荐：更新只需 git pull）
 
